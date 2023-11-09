@@ -8,3 +8,4 @@ public class InterfaceColours {
     public static final String BLUE = "\033[0;34m";    // BLUE
     public static final String WHITE = "\033[0;37m";   // WHITE
 }
+

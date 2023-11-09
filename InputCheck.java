@@ -7,6 +7,7 @@ public class InputCheck {
     };
 
     private gameCommand command; // 3 possible commands
+    private int[] faces;
 
     // parse user's input and assigning values to appropiate variable
     InputCheck(String input){
@@ -44,4 +45,13 @@ public class InputCheck {
     public boolean start(){
         return command == gameCommand.START;
     }
+
+    // returns the  face value 
+    public int getFace (int index) { 
+		return switch (index) {
+			case 1 -> faces[0];
+			case 2 -> faces[1];
+			default -> 0;
+		};
+	}
 }
