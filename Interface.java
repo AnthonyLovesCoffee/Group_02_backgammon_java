@@ -32,16 +32,16 @@ public class Interface {
 	// initial screen to get player names 
 	public void gameIntro(Board board){
 		System.out.print("Enter name of Player 1: ");
-		board.initPlayer(1);;
-		System.out.println("Player 1: " + board.getPlayer(1) + ", Colour: RED");
+		board.initPlayer(1);
+		System.out.println("Player 1: " + board.getPlayer(1).dispName() + ", Colour: RED");
 		System.out.print("Enter name of Player 2: ");
-		board.initPlayer(2);;
-		System.out.println("Player 2: " + board.getPlayer(2) + ", Colour: WHITE");
+		board.initPlayer(2);
+		System.out.println("Player 2: " + board.getPlayer(2).dispName() + ", Colour: WHITE");
 	}
 
 	// start menu - options to start or exit the game
 	public void starterScreen () { 
-		System.out.println("Enter S to start the game or enter Q to exit");
+		System.out.println("Enter START to start the game or enter QUIT to exit");
 	}
 
 	public void displayBoard (Board board){

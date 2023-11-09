@@ -7,10 +7,12 @@ public class Game {
         int startControl = 0;
         boolean matchOverDisplayed = false;
         intface.gameWelcome();
+        intface.starterScreen();
         do {
 			boolean commandDone = false;
 			do {
 				command = intface.getUserInput();
+
                 // when user has started the game 
 				if (startControl == 1 && !board.isMatchOver())
 					if (command.roll()) {
@@ -28,7 +30,6 @@ public class Game {
 					}  
 					if (!board.isMatchOver() && matchOverDisplayed){
 					    if (command.start()) {
-							intface.starterScreen();
 							startControl--;
 							matchOverDisplayed = false;
 							commandDone = true;
@@ -40,6 +41,7 @@ public class Game {
                 // if user has not started a game yet
 				if (startControl == 0) {
 					if (command.start()) {
+                        intface.starterScreen();
 						intface.gameIntro(board);
 						board.initBoard();
 						intface.firstTurn(board);
@@ -52,7 +54,8 @@ public class Game {
 						commandDone = true;
 				}
 			} while (!commandDone);
-		} while (!command.quit() && !board.isMatchOver());
+		} 
+        while (!command.quit() && !board.isMatchOver());
 		if (board.isMatchOver()) {
 			intface.displayWholeMatchOver(board);
 		} else
