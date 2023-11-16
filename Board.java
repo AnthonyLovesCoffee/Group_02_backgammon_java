@@ -41,13 +41,15 @@ public class Board {
     }
 
     // initialize the board
-    public void initBoard () { 
+    public void initBoard () {
+        // clear ALL from outset 
 		for (int i = 0; i < 24; i++)
 	        points.get(i).clear();
 	    for (int i = 0; i < 2; i++)
 	    	bars.get(i).clear();
 	    for (int i = 0; i < 2; i++)
 	    	endpoints.get(i).clear();
+        // adding checkers to starting positions
 		for (int i = 0; i < 2; i++) {
 			points.get(0).push(new Checker(CheckerTemplate.WHITE));
 			points.get(23).push(new Checker(CheckerTemplate.RED));
@@ -118,4 +120,5 @@ public class Board {
     public void rollDice () { 
 		dice.roll();
 	}
+
 }
