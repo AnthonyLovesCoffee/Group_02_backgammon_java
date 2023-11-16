@@ -110,10 +110,10 @@ public class Interface {
 
 		// Printing Current player (Current player is indicated)
 		if (board.getPlayer(0).getColourString() == "RED") {
-			board.calPips(); // calulates pip before printing
+			board.calcPips(); // calulates pip before printing
 			System.out.print("\n| Current player's color: " + InterfaceColours.RED + board.getPlayer(0).getColourString() + InterfaceColours.RESET + "                               pips:  " +  board.getPlayer(0).getPips() + "|\n");
 		} else if (board.getPlayer(0).getColourString() == "WHITE"){
-			board.calPips(); // calulates pip before printing
+			board.calcPips(); // calulates pip before printing
 			System.out.print("\n| Current player's color: " + InterfaceColours.WHITE + board.getPlayer(0).getColourString() + InterfaceColours.RESET + "                             pips:  " + board.getPlayer(0).getPips()  + "|\n" );
 		}
 
