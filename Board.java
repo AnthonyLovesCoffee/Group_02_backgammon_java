@@ -196,10 +196,21 @@ public class Board {
    			players[2].setPips(pip2);
    		}
 	}
+
+	public boolean isOneMatchOver () { // Check if one match in the game is over
+		for (Stack<Checker> endpoint : endpoints)
+			if (endpoint.size() == 15)
+				return true;
+		return false;
+	}
+	
+	public boolean isWholeMatchOver () { // Check if the whole match in the game is over
+		return matchNumber + 1 == matchRoundNumber;
+	}
 	
 
-// 	// Check if a move is possible after giving a command
-// 	public boolean moveIsPossible (InputCheck command) { 
+	// // Check if a move is possible after giving a command
+	// public boolean moveIsPossible (InputCheck command) { 
 // 		boolean isPossible = false;
 // 		if (command.fromBarMove() && command.toPointMove()) {
 // 			Stack<Checker> bar = bars.get(command.getSrcPile());
@@ -473,4 +484,4 @@ public class Board {
 // 		return isPossible;
 // 	}
 
- }
+}
