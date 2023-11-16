@@ -299,13 +299,31 @@ public class Interface {
 		} while (board.getDiceFace(1) == board.getDiceFace(2));
 	}
 
-	// print a message when the match is over
-	public void displayWholeMatchOver (Board board) { 
+
+
+
+	public void GameOver (Board board) { // Display a message when the whole match is over
+		if (board.getPlayer(1).getScore() > board.getPlayer(2).getScore()) {
+			System.out.println(board.getPlayer(1).dispName() + " wins the game!.");
+		} else if (board.getPlayer(1).getScore() < board.getPlayer(2).getScore()) {
+			System.out.println(board.getPlayer(2).dispName() + " wins the game!.");
+		} else if (board.getPlayer(1).getScore() == board.getPlayer(2).getScore())
+			System.out.println("Its a draw :(");
 		System.out.println("Game over.");
 	}
 
-	// print  message when user quits
-	public void displayQuit () { 
-		System.out.println("Quit.");
+
+	public void displayQuit () { // Display a message when the user quits
+		System.out.println("You Quit. Loser");
 	}
+	
+	public void playerTurnCurrent (Player player) { // Display a message when the current player's turn is over
+		System.out.println(player + "(" + player.getColourString() + ") finishes moving. ☺ ");
+	}
+	
+	public void playerTurnNext (Player player) { // Display a message when the next player's turn starts
+		System.out.println("Now it's the " + player + "(" + player.getColourString() + ")'s turn to play. Lets go !");
+	}
+
+
 }

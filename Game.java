@@ -57,7 +57,7 @@ public class Game {
 		} 
         while (!command.quit() && !board.isMatchOver());
 		if (board.isMatchOver()) {
-			intface.displayWholeMatchOver(board);
+			intface.GameOver(board);
 		} else
 			intface.displayQuit();
 	}
