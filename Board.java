@@ -16,6 +16,8 @@ public class Board {
 	private Interface intrface;
 	private Scanner input;
 	private Dice dice;
+	private int matchRoundNumber = 1;
+	private int matchNumber;
 
     Board(){
         intrface = new Interface();
@@ -116,9 +118,359 @@ public class Board {
 		return false;
 	}
 
+	public void setCurrentPlayer (int playerIndex){
+		this.players[0] = players[playerIndex];
+	}
+
     // Roll the dice
     public void rollDice () { 
 		dice.roll();
 	}
 
-}
+	public Stack<Checker> getPoint(int i){
+		return points.get(i);
+	}  
+
+	public Stack<Checker> getBar (int i){
+		return bars.get(i);
+	}
+
+	public Stack<Checker> getEndpoint (int i){
+		return endpoints.get(i);
+	}
+
+	public int getMatchNumber(){
+		return matchNumber;
+	}
+
+	public void setMatchNumber(int matchnum){
+		this.matchNumber = matchnum;
+	}
+
+	public int getMatchRound(){
+		return matchRoundNumber;
+	}
+
+	public void setMatchRound(int roundnum){
+		this.matchRoundNumber = roundnum;
+	}
+
+
+	public int getSize (String index) { // Get the size of the largest stack of Checkers for the specified index (uppoint or downpoint)
+		int uppointSize = 0;
+		int downpointSize = 0;
+		List<Stack<Checker>> up12points = points.subList(0, 12);
+		List<Stack<Checker>> down12points = points.subList(12, 24);
+		for (Stack<Checker> point : up12points)
+		    if (point.size() > uppointSize)
+		    	uppointSize = point.size();
+		if (bars.get(1).size() > uppointSize)
+	    	uppointSize = bars.get(1).size();
+		for (Stack<Checker> point : down12points)
+		    if (point.size() > downpointSize)
+		    	downpointSize = point.size();
+		if (bars.get(0).size() > downpointSize)
+	    	downpointSize = bars.get(0).size();
+		return switch(index) {
+			case "uppoint" -> uppointSize;
+			case "downpoint" -> downpointSize;
+			default -> 0;
+		};
+	}
+
+
+	public void calPips () { // Calculate the number of pips for each player
+		int pip1 = 0;
+		int pip2 = 0;
+   		for (int i=0; i<24; i++) {
+   			if (!points.get(i).empty())
+   				if (points.get(i).peek().getCheckerTemplate() == CheckerTemplate.RED) {
+   					pip1 += (i+1)*points.get(i).size();
+   				} else if (points.get(i).peek().getCheckerTemplate() == CheckerTemplate.WHITE)
+   					pip2 += (24-i)*points.get(i).size();
+   			if (endpoints.get(0).size() == 15)
+   				pip1 = 0;
+   			if (endpoints.get(1).size() == 15)
+   				pip2 = 0;
+   			players[1].setPips(pip1);
+   			players[2].setPips(pip2);
+   		}
+	}
+	
+
+// 	// Check if a move is possible after giving a command
+// 	public boolean moveIsPossible (InputCheck command) { 
+// 		boolean isPossible = false;
+// 		if (command.fromBarMove() && command.toPointMove()) {
+// 			Stack<Checker> bar = bars.get(command.getSrcPile());
+// 			Stack<Checker> point = points.get(command.getDestPile());
+// 			if (!bar.empty())
+// 				if (bar.peek().getCheckerTemplate() == players[0].getCheckerTemplate() && (point.empty() || point.size() == 1 || bar.peek().getCheckerTemplate() == point.peek().getCheckerTemplate()) && dice.getNumMoves() != 0) {
+// 					if (dice.getFace(1) != dice.getFace(2)) {
+// 						for (int i = 1; i <= 2; i++)
+// 							if (dice.getMoveStep(i) != 0 && (players[0] == players[1] && command.getSrcPile() + 24 == command.getDestPile() + dice.getFace(i) || players[0] == players[2] && command.getSrcPile() + dice.getFace(i) == command.getDestPile() + 2)) {
+// 								isPossible = true;
+// 								dice.decreaseNumMoves(i);
+// 							}
+// 						if (dice.getMoveStep(1) != 0 && dice.getMoveStep(2) != 0 && bar.size() == 1
+// 						&& (players[0] == players[1] && command.getSrcPile() + 24 == command.getDestPile() + dice.getFace(1) + dice.getFace(2) && (points.get(24 - dice.getFace(1)).empty() || points.get(24 - dice.getFace(2)).empty() || points.get(24 - dice.getFace(1)).peek().getCheckerTemplate() == players[1].getCheckerTemplate() || points.get(24 - dice.getFace(2)).peek().getCheckerTemplate() == players[1].getCheckerTemplate())
+// 						|| players[0] == players[2] && command.getSrcPile() + dice.getFace(1) + dice.getFace(2) == command.getDestPile() + 2 && (points.get(dice.getFace(1) - 1).empty() || points.get(dice.getFace(2) - 1).empty() || points.get(dice.getFace(1) - 1).peek().getCheckerTemplate() == players[2].getCheckerTemplate() || points.get(dice.getFace(2) - 1).peek().getCheckerTemplate() == players[2].getCheckerTemplate()))) {
+// 							isPossible = true;
+// 							dice.decreaseNumMoves(1);
+// 							dice.decreaseNumMoves(2);
+// 						}
+// 					}
+// 					if (dice.getFace(1) == dice.getFace(2) && dice.getMoveStep(1) != 0) {
+// 					boolean allConditionsMet = true;
+// 					boolean currentCondition = true;
+// 						if (players[0] == players[1]) {
+// 							if (command.getSrcPile() + 24 == command.getDestPile() + dice.getFace(1) && (points.get(24 - dice.getFace(1)).empty() || points.get(24 - dice.getFace(1)).size() == 1 || points.get(24 - dice.getFace(1)).peek().getCheckerTemplate() == players[1].getCheckerTemplate())) {
+// 								isPossible = true;
+// 								dice.decreaseNumMoves(1);
+// 							}
+// 							for (int i = 2; i <= dice.getMoveStep(1); i++)
+// 								if (command.getSrcPile() + 24 == command.getDestPile() + dice.getFace(1) * i && bar.size() == 1) {
+// 									for (int j = 1; j <= i - 1; j++) {
+// 										currentCondition = points.get(24 - dice.getFace(1) * j).empty() || points.get(24 - dice.getFace(1) * j).peek().getCheckerTemplate() == players[1].getCheckerTemplate();
+// 										allConditionsMet = allConditionsMet && currentCondition;
+// 									}
+// 									currentCondition = points.get(24 - dice.getFace(1) * i).empty() || points.get(24 - dice.getFace(1) * i).peek().getCheckerTemplate() == players[1].getCheckerTemplate() || points.get(24 - dice.getFace(1) * i).size() == 1;
+// 									allConditionsMet = allConditionsMet && currentCondition;
+// 									if (allConditionsMet) {
+// 										isPossible = true;
+// 										for (int j = 0; j < i; j++)
+// 											dice.decreaseNumMoves(1);
+// 									}
+// 								}
+// 						}
+// 						if (players[0] == players[2]) {
+// 							if (command.getSrcPile() + dice.getFace(1) == command.getDestPile() + 2 && (points.get(dice.getFace(1) - 1).empty() || points.get(dice.getFace(1) - 1).size() == 1 || points.get(dice.getFace(1) - 1).peek().getCheckerTemplate() == players[2].getCheckerTemplate())) {
+// 								isPossible = true;
+// 								dice.decreaseNumMoves(1);
+// 							}
+// 							for (int i = 2; i <= dice.getMoveStep(1); i++)
+// 								if (command.getSrcPile() + dice.getFace(1) * i == command.getDestPile() + 2 && bar.size() == 1) {
+// 									for (int j = 1; j <= i - 1; j++) {
+// 										currentCondition = points.get(dice.getFace(1) * j - 1).empty() || points.get(dice.getFace(1) * j - 1).peek().getCheckerTemplate() == players[2].getCheckerTemplate();
+// 										allConditionsMet = allConditionsMet && currentCondition;
+// 									}
+// 									currentCondition = points.get(dice.getFace(1) * i - 1).empty() || points.get(dice.getFace(1) * i - 1).peek().getCheckerTemplate() == players[2].getCheckerTemplate() || points.get(dice.getFace(1) * i - 1).size() == 1;
+// 									allConditionsMet = allConditionsMet && currentCondition;
+// 									if (allConditionsMet) {
+// 										isPossible = true;
+// 										for (int j = 0; j < i; j++)
+// 											dice.decreaseNumMoves(1);
+// 									}
+// 								}
+// 						}
+// 					}
+// 				}
+// 		} else if (command.fromPointMove() && command.toEndMove()) {
+// 			Stack<Checker> point = points.get(command.getSrcPile());
+// 			Stack<Checker> endpoint = endpoints.get(command.getDestPile());
+// 			int finalStage = endpoint.size();
+// 			for (int i = 0; i < 6; i++) {
+// 				if (!points.get(i).empty())
+// 					if (players[0] == players[1] && points.get(i).peek().getCheckerTemplate() == players[0].getCheckerTemplate()) {
+// 						finalStage += points.get(i).size();
+// 						if (command.getSrcPile() >= 6)
+// 							finalStage += 1;
+// 					}
+// 				if (!points.get(i+18).empty())
+// 					if (players[0] == players[2] && points.get(i+18).peek().getCheckerTemplate() == players[0].getCheckerTemplate()) {
+// 						finalStage += points.get(i+18).size();
+// 						if (command.getSrcPile() <= 17)
+// 							finalStage += 1;
+// 					}
+// 			}
+// 			if (!point.empty())
+// 				if (getPlayerNumber() == command.getDestPile() && point.peek().getCheckerTemplate() == players[0].getCheckerTemplate() && finalStage == 15 && dice.getNumMoves() != 0) {
+// 					int maxpoint = -1;
+// 					if (dice.getFace(1) != dice.getFace(2)) {
+// 						int diceIndexToDecrement = -1;
+// 						if (players[0] == players[1]) {
+// 							maxpoint = getMaxpointOnInnerTable(command, points, 1);
+// 							for (int i = 1; i <= 2; i++) {
+// 								if (dice.getMoveStep(i) != 0 && command.getSrcPile() == maxpoint && command.getSrcPile() + 1 < command.getDestPile() + dice.getFace(i) || dice.getMoveStep(i) != 0 && command.getSrcPile() + 1 == command.getDestPile() + dice.getFace(i)) {
+// 									isPossible = true;
+// 									if (diceIndexToDecrement == -1 || dice.getFace(i) > dice.getFace(diceIndexToDecrement))
+// 							            diceIndexToDecrement = i;
+// 								}
+// 							}
+// 							if (diceIndexToDecrement != -1)
+// 							    dice.decreaseNumMoves(diceIndexToDecrement);
+// 							if (dice.getMoveStep(1) != 0 && dice.getMoveStep(2) != 0 && command.getSrcPile() + 1 > command.getDestPile() + dice.getFace(1) && command.getSrcPile() + 1 > command.getDestPile() + dice.getFace(2))
+// 								if (command.getSrcPile() == maxpoint && command.getSrcPile() + 1 < command.getDestPile() + dice.getFace(1) + dice.getFace(2)
+// 								&& (points.get(command.getSrcPile() - dice.getFace(1)).empty() || points.get(command.getSrcPile() - dice.getFace(2)).empty() || points.get(command.getSrcPile() - dice.getFace(1)).peek().getCheckerTemplate() == players[1].getCheckerTemplate() || points.get(command.getSrcPile() - dice.getFace(2)).peek().getCheckerTemplate() == players[1].getCheckerTemplate())
+// 								&& point.size() == 1 && (isPathClear(command.getSrcPile() - dice.getFace(1), command.getSrcPile()) || isPathClear(command.getSrcPile() - dice.getFace(2), command.getSrcPile()))
+// 								|| command.getSrcPile() + 1 == command.getDestPile() + dice.getFace(1) + dice.getFace(2)
+// 								&& (points.get(command.getSrcPile() - dice.getFace(1)).empty() || points.get(command.getSrcPile() - dice.getFace(2)).empty() || points.get(command.getSrcPile() - dice.getFace(1)).peek().getCheckerTemplate() == players[1].getCheckerTemplate() || points.get(command.getSrcPile() - dice.getFace(2)).peek().getCheckerTemplate() == players[1].getCheckerTemplate())) {
+// 									isPossible = true;
+// 									dice.decreaseNumMoves(1);
+// 									dice.decreaseNumMoves(2);
+// 								}
+// 						}
+// 						if (players[0] == players[2]) {
+// 							maxpoint = getMaxpointOnInnerTable(command, points, 2);
+// 							for (int i = 1; i <= 2; i++) {
+// 								if (dice.getMoveStep(i) != 0 && command.getSrcPile() == maxpoint && command.getSrcPile() + dice.getFace(i) > command.getDestPile() + 23 || dice.getMoveStep(i) != 0 && command.getSrcPile() + dice.getFace(i) == command.getDestPile() + 23) {
+// 									isPossible = true;
+// 									if (diceIndexToDecrement == -1 || dice.getFace(i) > dice.getFace(diceIndexToDecrement))
+// 							            diceIndexToDecrement = i;
+// 								}
+// 							}
+// 							if (diceIndexToDecrement != -1)
+// 							    dice.decreaseNumMoves(diceIndexToDecrement);
+// 							if (dice.getMoveStep(1) != 0 && dice.getMoveStep(2) != 0 && command.getSrcPile() + dice.getFace(1) < command.getDestPile() + 23 && command.getSrcPile() + dice.getFace(2) < command.getDestPile() + 23)
+// 								if (command.getSrcPile() == maxpoint && command.getSrcPile() + dice.getFace(1) + dice.getFace(2) > command.getDestPile() + 23
+// 								&& (points.get(command.getSrcPile() + dice.getFace(1)).empty() || points.get(command.getSrcPile() + dice.getFace(2)).empty() || points.get(command.getSrcPile() + dice.getFace(1)).peek().getCheckerTemplate() == players[2].getCheckerTemplate() || points.get(command.getSrcPile() + dice.getFace(2)).peek().getCheckerTemplate() == players[2].getCheckerTemplate())
+// 								&& point.size() == 1 && (isPathClear(command.getSrcPile(), command.getSrcPile() + dice.getFace(1)) || isPathClear(command.getSrcPile(), command.getSrcPile() + dice.getFace(2)))
+// 								|| command.getSrcPile() + dice.getFace(1) + dice.getFace(2) == command.getDestPile() + 23
+// 								&& (points.get(command.getSrcPile() + dice.getFace(1)).empty() || points.get(command.getSrcPile() + dice.getFace(2)).empty() || points.get(command.getSrcPile() + dice.getFace(1)).peek().getCheckerTemplate() == players[2].getCheckerTemplate() || points.get(command.getSrcPile() + dice.getFace(2)).peek().getCheckerTemplate() == players[2].getCheckerTemplate())) {
+// 									isPossible = true;
+// 									dice.decreaseNumMoves(1);
+// 									dice.decreaseNumMoves(2);
+// 								}
+// 						}
+// 					}
+// 					if (dice.getFace(1) == dice.getFace(2) && dice.getMoveStep(1) != 0) {
+// 						boolean allConditionsMet = true;
+// 						boolean currentCondition = true;
+// 						boolean shouldBreak = false;
+// 						if (players[0] == players[1]) {
+// 							maxpoint = getMaxpointOnInnerTable(command, points, 1);
+// 							if (command.getSrcPile() == maxpoint && command.getSrcPile() + 1 < command.getDestPile() + dice.getFace(1) || command.getSrcPile() + 1 == command.getDestPile() + dice.getFace(1)) {
+// 								isPossible = true;
+// 								dice.decreaseNumMoves(1);
+// 							}
+// 							for (int i = 2; i <= dice.getMoveStep(1) && !shouldBreak; i++)
+// 								if (command.getSrcPile() == maxpoint && command.getSrcPile() + 1 < command.getDestPile() + dice.getFace(1) * i) {
+// 									for (int j = 1; j <= i - 1 && command.getSrcPile() - dice.getFace(1) * j >= 0; j++) {
+// 										currentCondition = points.get(command.getSrcPile() - dice.getFace(1) * j).empty() || points.get(command.getSrcPile() - dice.getFace(1) * j).peek().getCheckerTemplate() == players[1].getCheckerTemplate();
+// 										allConditionsMet = allConditionsMet && currentCondition;
+// 									}
+// 									currentCondition = point.size() == 1 && isPathClear(command.getSrcPile() - dice.getFace(1) * (i - 1), command.getSrcPile());
+// 									allConditionsMet = allConditionsMet && currentCondition;
+// 									if (allConditionsMet) {
+// 										isPossible = true;
+// 										for (int j = 0; j < i; j++)
+// 											dice.decreaseNumMoves(1);
+// 									}
+// 									shouldBreak = true;
+// 								} else if (command.getSrcPile() + 1 == command.getDestPile() + dice.getFace(1) * i) {
+// 									for (int j = 1; j <= i - 1; j++) {
+// 										currentCondition = points.get(command.getSrcPile() - dice.getFace(1) * j).empty() || points.get(command.getSrcPile() - dice.getFace(1) * j).peek().getCheckerTemplate() == players[1].getCheckerTemplate();
+// 										allConditionsMet = allConditionsMet && currentCondition;
+// 									}
+// 									if (allConditionsMet) {
+// 										isPossible = true;
+// 										for (int j = 0; j < i; j++)
+// 											dice.decreaseNumMoves(1);
+// 									}
+// 								}
+// 						}
+// 						if (players[0] == players[2]) {
+// 							maxpoint = getMaxpointOnInnerTable(command, points, 2);
+// 							if (command.getSrcPile() == maxpoint && command.getSrcPile() + dice.getFace(1) > command.getDestPile() + 23 || command.getSrcPile() + dice.getFace(1) == command.getDestPile() + 23) {
+// 								isPossible = true;
+// 								dice.decreaseNumMoves(1);
+// 							}
+// 							for (int i = 2; i <= dice.getMoveStep(1) && !shouldBreak; i++)
+// 								if (command.getSrcPile() == maxpoint && command.getSrcPile() + dice.getFace(1) * i > command.getDestPile() + 23) {
+// 									for (int j = 1; j <= i - 1 && command.getSrcPile() + dice.getFace(1) * j <= 23; j++) {
+// 										currentCondition = points.get(command.getSrcPile() + dice.getFace(1) * j).empty() || points.get(command.getSrcPile() + dice.getFace(1) * j).peek().getCheckerTemplate() == players[2].getCheckerTemplate();
+// 										allConditionsMet = allConditionsMet && currentCondition;
+// 									}
+// 									currentCondition = point.size() == 1 && isPathClear(command.getSrcPile(), command.getSrcPile() + dice.getFace(1) * (i - 1));
+// 									allConditionsMet = allConditionsMet && currentCondition;
+// 									if (allConditionsMet) {
+// 										isPossible = true;
+// 										for (int j = 0; j < i; j++)
+// 											dice.decreaseNumMoves(1);
+// 									}
+// 									shouldBreak = true;
+// 								} else if (command.getSrcPile() + dice.getFace(1) * i == command.getDestPile() + 23) {
+// 									for (int j = 1; j <= i - 1; j++) {
+// 										currentCondition = points.get(command.getSrcPile() + dice.getFace(1) * j).empty() || points.get(command.getSrcPile() + dice.getFace(1) * j).peek().getCheckerTemplate() == players[2].getCheckerTemplate();
+// 										allConditionsMet = allConditionsMet && currentCondition;
+// 									}
+// 									if (allConditionsMet) {
+// 										isPossible = true;
+// 										for (int j = 0; j < i; j++)
+// 											dice.decreaseNumMoves(1);
+// 									}
+// 								}
+// 						}
+// 					}
+// 				}
+// 		} else if (command.fromPointMove() && command.toPointMove()) {
+// 			Stack<Checker> frompoint = points.get(command.getSrcPile());
+// 			Stack<Checker> topoint = points.get(command.getDestPile());
+// 			if (!frompoint.empty())
+// 				if (bars.get(getPlayerNumber()).empty() && frompoint.peek().getCheckerTemplate() == players[0].getCheckerTemplate() && (topoint.empty() || topoint.size() == 1 || frompoint.peek().getCheckerTemplate() == topoint.peek().getCheckerTemplate()) && dice.getMoveNumber() != 0) {
+// 					if (dice.getFace(1) != dice.getFace(2)) {
+// 						for (int i = 1; i <= 2; i++)
+// 							if (dice.getMoveStep(i) != 0 && (players[0] == players[1] && command.getSrcPile() == command.getDestPile() + dice.getFace(i) || players[0] == players[2] && command.getSrcPile() + dice.getFace(i) == command.getDestPile())) {
+// 								isPossible = true;
+// 								dice.decreaseNumMoves(i);
+// 							}
+// 						if (dice.getMoveStep(1) != 0 && dice.getMoveStep(2) != 0
+// 						&& (players[0] == players[1] && command.getSrcPile() == command.getDestPile() + dice.getFace(1) + dice.getFace(2) && (points.get(command.getSrcPile() - dice.getFace(1)).empty() || points.get(command.getSrcPile() - dice.getFace(2)).empty() || points.get(command.getSrcPile() - dice.getFace(1)).peek().getCheckerTemplate() == players[1].getCheckerTemplate() || points.get(command.getSrcPile() - dice.getFace(2)).peek().getCheckerTemplate() == players[1].getCheckerTemplate())
+// 						|| players[0] == players[2] && command.getSrcPile() + dice.getFace(1) + dice.getFace(2) == command.getDestPile() && (points.get(command.getSrcPile() + dice.getFace(1)).empty() || points.get(command.getSrcPile() + dice.getFace(2)).empty() || points.get(command.getSrcPile() + dice.getFace(1)).peek().getCheckerTemplate() == players[2].getCheckerTemplate() || points.get(command.getSrcPile() + dice.getFace(2)).peek().getCheckerTemplate() == players[2].getCheckerTemplate()))) {
+// 							isPossible = true;
+// 							dice.decreaseNumMoves(1);
+// 							dice.decreaseNumMoves(2);
+// 						}
+// 					}
+// 					if (dice.getFace(1) == dice.getFace(2) && dice.getMoveStep(1) != 0) {
+// 						boolean allConditionsMet = true;
+// 						boolean currentCondition = true;
+// 						if (players[0] == players[1]) {
+// 							if (command.getSrcPile() == command.getDestPile() + dice.getFace(1) && (points.get(command.getSrcPile() - dice.getFace(1)).empty() || points.get(command.getSrcPile() - dice.getFace(1)).size() == 1 || points.get(command.getSrcPile() - dice.getFace(1)).peek().getCheckerTemplate() == players[1].getCheckerTemplate())) {
+// 								isPossible = true;
+// 								dice.decreaseNumMoves(1);
+// 							}
+// 							for (int i = 2; i <= dice.getMoveStep(1); i++) {
+// 								if (command.getSrcPile() == command.getDestPile() + dice.getFace(1) * i) {
+// 									for (int j = 1; j <= i - 1; j++) {
+// 										currentCondition = points.get(command.getSrcPile() - dice.getFace(1) * j).empty() || points.get(command.getSrcPile() - dice.getFace(1) * j).peek().getCheckerTemplate() == players[1].getCheckerTemplate();
+// 										allConditionsMet = allConditionsMet && currentCondition;
+// 									}
+// 									currentCondition = points.get(command.getSrcPile() - dice.getFace(1) * i).empty() || points.get(command.getSrcPile() - dice.getFace(1) * i).peek().getCheckerTemplate() == players[1].getCheckerTemplate() || points.get(command.getSrcPile() - dice.getFace(1) * i).size() == 1;
+// 									allConditionsMet = allConditionsMet && currentCondition;
+// 									if (allConditionsMet) {
+// 										isPossible = true;
+// 										for (int j = 0; j < i; j++)
+// 											dice.decreaseNumMoves(1);
+// 									}
+// 								}
+// 							}
+// 						}
+// 						if (players[0] == players[2]) {
+// 							if (command.getSrcPile() + dice.getFace(1) == command.getDestPile() && (points.get(command.getSrcPile() + dice.getFace(1)).empty() || points.get(command.getSrcPile() + dice.getFace(1)).size() == 1 || points.get(command.getSrcPile() + dice.getFace(1)).peek().getCheckerTemplate() == players[2].getCheckerTemplate())) {
+// 								isPossible = true;
+// 								dice.decreaseNumMoves(1);
+// 							}
+// 							for (int i = 2; i <= dice.getMoveStep(1); i++) {
+// 								if (command.getSrcPile() + dice.getFace(1) * i == command.getDestPile()) {
+// 									for (int j = 1; j <= i - 1; j++) {
+// 										currentCondition = points.get(command.getSrcPile() + dice.getFace(1) * j).empty() || points.get(command.getSrcPile() + dice.getFace(1) * j).peek().getCheckerTemplate() == players[2].getCheckerTemplate();
+// 										allConditionsMet = allConditionsMet && currentCondition;
+// 									}
+// 									currentCondition = points.get(command.getSrcPile() + dice.getFace(1) * i).empty() || points.get(command.getSrcPile() + dice.getFace(1) * i).peek().getCheckerTemplate() == players[2].getCheckerTemplate() || points.get(command.getSrcPile() + dice.getFace(1) * i).size() == 1;
+// 									allConditionsMet = allConditionsMet && currentCondition;
+// 									if (allConditionsMet) {
+// 										isPossible = true;
+// 										for (int j = 0; j < i; j++)
+// 											dice.decreaseNumMoves(1);
+// 									}
+// 								}
+// 							}
+// 						}
+// 					}
+// 				}
+// 		}
+// 		return isPossible;
+// 	}
+
+ }

@@ -12,7 +12,7 @@ public class Checker {
         return checkerTemp;
     }
 
-    public String returnString(){
-        return checkerTemp.returnString();
+    public String toString(){
+        return checkerTemp.toString();
     }
 }

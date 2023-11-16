@@ -68,5 +68,18 @@ public class Dice {
 			default -> 0;
 		};
     }
+
+    public void decreaseNumMoves (int i) { 
+    	switch (i) {
+			case 1 -> numSteps[0]--;
+			case 2 -> numSteps[1]--;
+		};
+		numMoves = numSteps[0] + numSteps[1];
+    }
+
+    // getter to return total number of moves
+    public int getNumMoves(){
+        return numMoves;
+    }
 }
 
