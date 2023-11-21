@@ -60,8 +60,15 @@ public class Dice {
 		};
     }
 
-     // returns the step value for the specified index
-    public int getMoveStep (int index) {
+    // sets move step values and updates the total move number
+    public void setStepVal (int firstStep, int secondStep) { 
+    	numSteps[0] = firstStep;
+    	numSteps[1] = secondStep;
+    	numMoves = numSteps[0] + numSteps[1];
+    }
+
+    // returns the step value for the specified index
+    public int getStepVal (int index) {
     	return switch (index) {
 			case 1 -> numSteps[0];
 			case 2 -> numSteps[1];

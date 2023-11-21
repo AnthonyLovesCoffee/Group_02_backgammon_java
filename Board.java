@@ -23,7 +23,7 @@ public class Board {
         intrface = new Interface();
         input = new Scanner(System.in);
         dice = new Dice();
-        // 3 player instances - 2 ingame, 1 for pregame
+        // 3 player instances - 2 ingame, 1 for current player
         this.players = new Player[3];
 
         points = new ArrayList<>(NUM_POINTS);
@@ -104,11 +104,16 @@ public class Board {
     // return move step of the dice given the index
     public int getDiceMoveStep (int index) { 
     	return switch (index) {
-			case 1 -> dice.getMoveStep(1);
-			case 2 -> dice.getMoveStep(2);
+			case 1 -> dice.getStepVal(1);
+			case 2 -> dice.getStepVal(2);
 			default -> 0;
 		};
     }
+
+	// set the value of each dice step
+	public void setDiceStepVals (int stepOne, int stepTwo) { // Set the move steps by the given number of dice
+		dice.setStepVal(stepOne, stepTwo);
+	}
 
     // return if game is over
     public boolean isMatchOver () { 
@@ -121,6 +126,25 @@ public class Board {
 	public void setCurrentPlayer (int playerIndex){
 		this.players[0] = players[playerIndex];
 	}
+
+	public void endTurn () { // End the current player's turn
+		if (!isMatchOver()) {
+	        if (players[0] == players[1]) {
+	            players[0] = players[2];
+	            intrface.currentTurnOver(players[1]);
+	            intrface.nextPlayerTurn(players[2]);
+	        } else if (players[0] == players[2]) {
+	        	players[0] = players[1];
+	        	intrface.currentTurnOver(players[2]);
+	            intrface.nextPlayerTurn(players[1]);
+	        }
+		} else if (isMatchOver()) {
+			if (players[0] == players[1]) {
+				intrface.currentTurnOver(players[1]);
+			} else if (players[0] == players[2])
+				intrface.currentTurnOver(players[2]);
+		}
+    }
 
 	private boolean isPathClear (int start, int end) { 
 		if (start < 0)
@@ -135,12 +159,18 @@ public class Board {
 	    return true;
 	}
 
+	// total distance number that player can move
+	public int getTotalNumMoves(){
+		return dice.getNumMoves();
+	}
+
 	private int getPlayerNumber () { // Get the player number
     	if (players[0].getCheckerTemplate() == CheckerTemplate.WHITE) {
     		return 1;
     	} else // players[0].getCheckerTemplate() == PieceEntity.R
     		return 0;
     }
+
 	// determines furthest occupied point in the player's inner table or the starting point of their move
 	private int findFurthestOccupiedpoint (InputCheck command, List<Stack<Checker>> points, int playerIndex) { 
 		int maxpoint = -1;
@@ -200,8 +230,8 @@ public class Board {
 		this.matchRoundNumber = roundnum;
 	}
 
-
-	public int getSize (String index) { // Get the size of the largest stack of Checkers for the specified index (uppoint or downpoint)
+	// return size of the largest stack for given index
+	public int getSize (String index) { 
 		int uppointSize = 0;
 		int downpointSize = 0;
 		List<Stack<Checker>> up12points = points.subList(0, 12);
@@ -227,19 +257,21 @@ public class Board {
 	public void calcPips () { 
 		int pip1 = 0;
 		int pip2 = 0;
-   		for (int i=0; i<24; i++) {
-   			if (!points.get(i).empty())
+   		for (int i = 0; i < 24; i++) {
+   			if (!points.get(i).empty()){
    				if (points.get(i).peek().getCheckerTemplate() == CheckerTemplate.RED) {
    					pip1 += (i+1)*points.get(i).size();
-   				} else if (points.get(i).peek().getCheckerTemplate() == CheckerTemplate.WHITE)
-   					pip2 += (24-i)*points.get(i).size();
+   				} else if (points.get(i).peek().getCheckerTemplate() == CheckerTemplate.WHITE){
+					pip2 += (24-i)*points.get(i).size();
+				}
+			}
    			if (endpoints.get(0).size() == 15)
    				pip1 = 0;
    			if (endpoints.get(1).size() == 15)
    				pip2 = 0;
    			players[1].setPips(pip1);
    			players[2].setPips(pip2);
-   		}
+		}
 	}
 	public boolean moveisLegal (InputCheck command) { 
 		boolean isLegal = false;
@@ -255,7 +287,7 @@ public class Board {
 					if (dice.getFace(1) != dice.getFace(2)) {
 
 						for (int i = 1; i <= 2; i++){
-							if (dice.getMoveStep(i) != 0 && (players[0] == players[1] 
+							if (dice.getStepVal(i) != 0 && (players[0] == players[1] 
 							&& command.getSrcPile() + 24 == command.getDestPile() + dice.getFace(i) 
 							|| players[0] == players[2] 
 							&& command.getSrcPile() + dice.getFace(i) == command.getDestPile() + 2)) {
@@ -264,8 +296,8 @@ public class Board {
 							}
 						}
 
-						if (dice.getMoveStep(1) != 0 
-						&& dice.getMoveStep(2) != 0 
+						if (dice.getStepVal(1) != 0 
+						&& dice.getStepVal(2) != 0 
 						&& bar.size() == 1
 						&& (players[0] == players[1] 
 						&& command.getSrcPile() + 24 == command.getDestPile() + dice.getFace(1) + dice.getFace(2) 
@@ -284,7 +316,7 @@ public class Board {
 							dice.decreaseNumMoves(2);
 						}
 					}
-					if (dice.getFace(1) == dice.getFace(2) && dice.getMoveStep(1) != 0) {
+					if (dice.getFace(1) == dice.getFace(2) && dice.getStepVal(1) != 0) {
 					boolean validMove = true;
 					boolean isValidStep = true;
 						if (players[0] == players[1]) {
@@ -294,7 +326,7 @@ public class Board {
 								isLegal = true;
 								dice.decreaseNumMoves(1);
 							}
-							for (int i = 2; i <= dice.getMoveStep(1); i++){
+							for (int i = 2; i <= dice.getStepVal(1); i++){
 								if (command.getSrcPile() + 24 == command.getDestPile() + dice.getFace(1) * i
 								 && bar.size() == 1) {
 									for (int j = 1; j <= i - 1; j++) {
@@ -318,7 +350,7 @@ public class Board {
 								isLegal = true;
 								dice.decreaseNumMoves(1);
 							}
-							for (int i = 2; i <= dice.getMoveStep(1); i++)
+							for (int i = 2; i <= dice.getStepVal(1); i++)
 								if (command.getSrcPile() + dice.getFace(1) * i == command.getDestPile() + 2 && bar.size() == 1) {
 									for (int j = 1; j <= i - 1; j++) {
 										isValidStep = points.get(dice.getFace(1) * j - 1).empty() 
@@ -365,7 +397,7 @@ public class Board {
 						if (players[0] == players[1]) {
 							maxpoint = findFurthestOccupiedpoint(command, points, 1);
 							for (int i = 1; i <= 2; i++) {
-								if (dice.getMoveStep(i) != 0 && command.getSrcPile() == maxpoint && command.getSrcPile() + 1 < command.getDestPile() + dice.getFace(i) || dice.getMoveStep(i) != 0 && command.getSrcPile() + 1 == command.getDestPile() + dice.getFace(i)) {
+								if (dice.getStepVal(i) != 0 && command.getSrcPile() == maxpoint && command.getSrcPile() + 1 < command.getDestPile() + dice.getFace(i) || dice.getStepVal(i) != 0 && command.getSrcPile() + 1 == command.getDestPile() + dice.getFace(i)) {
 									isLegal = true;
 									if (diceIndexToDecrement == -1 || dice.getFace(i) > dice.getFace(diceIndexToDecrement))
 							            diceIndexToDecrement = i;
@@ -373,7 +405,7 @@ public class Board {
 							}
 							if (diceIndexToDecrement != -1)
 							    dice.decreaseNumMoves(diceIndexToDecrement);
-							if (dice.getMoveStep(1) != 0 && dice.getMoveStep(2) != 0 && command.getSrcPile() + 1 > command.getDestPile() + dice.getFace(1) && command.getSrcPile() + 1 > command.getDestPile() + dice.getFace(2))
+							if (dice.getStepVal(1) != 0 && dice.getStepVal(2) != 0 && command.getSrcPile() + 1 > command.getDestPile() + dice.getFace(1) && command.getSrcPile() + 1 > command.getDestPile() + dice.getFace(2))
 								if (command.getSrcPile() == maxpoint && command.getSrcPile() + 1 < command.getDestPile() + dice.getFace(1) + dice.getFace(2)
 								&& (points.get(command.getSrcPile() - dice.getFace(1)).empty() || points.get(command.getSrcPile() - dice.getFace(2)).empty() || points.get(command.getSrcPile() - dice.getFace(1)).peek().getCheckerTemplate() == players[1].getCheckerTemplate() || points.get(command.getSrcPile() - dice.getFace(2)).peek().getCheckerTemplate() == players[1].getCheckerTemplate())
 								&& point.size() == 1 && (isPathClear(command.getSrcPile() - dice.getFace(1), command.getSrcPile()) || isPathClear(command.getSrcPile() - dice.getFace(2), command.getSrcPile()))
@@ -387,7 +419,7 @@ public class Board {
 						if (players[0] == players[2]) {
 							maxpoint = findFurthestOccupiedpoint(command, points, 2);
 							for (int i = 1; i <= 2; i++) {
-								if (dice.getMoveStep(i) != 0 && command.getSrcPile() == maxpoint && command.getSrcPile() + dice.getFace(i) > command.getDestPile() + 23 || dice.getMoveStep(i) != 0 && command.getSrcPile() + dice.getFace(i) == command.getDestPile() + 23) {
+								if (dice.getStepVal(i) != 0 && command.getSrcPile() == maxpoint && command.getSrcPile() + dice.getFace(i) > command.getDestPile() + 23 || dice.getStepVal(i) != 0 && command.getSrcPile() + dice.getFace(i) == command.getDestPile() + 23) {
 									isLegal = true;
 									if (diceIndexToDecrement == -1 || dice.getFace(i) > dice.getFace(diceIndexToDecrement))
 							            diceIndexToDecrement = i;
@@ -395,7 +427,7 @@ public class Board {
 							}
 							if (diceIndexToDecrement != -1)
 							    dice.decreaseNumMoves(diceIndexToDecrement);
-							if (dice.getMoveStep(1) != 0 && dice.getMoveStep(2) != 0 && command.getSrcPile() + dice.getFace(1) < command.getDestPile() + 23 && command.getSrcPile() + dice.getFace(2) < command.getDestPile() + 23)
+							if (dice.getStepVal(1) != 0 && dice.getStepVal(2) != 0 && command.getSrcPile() + dice.getFace(1) < command.getDestPile() + 23 && command.getSrcPile() + dice.getFace(2) < command.getDestPile() + 23)
 								if (command.getSrcPile() == maxpoint && command.getSrcPile() + dice.getFace(1) + dice.getFace(2) > command.getDestPile() + 23
 								&& (points.get(command.getSrcPile() + dice.getFace(1)).empty() || points.get(command.getSrcPile() + dice.getFace(2)).empty() || points.get(command.getSrcPile() + dice.getFace(1)).peek().getCheckerTemplate() == players[2].getCheckerTemplate() || points.get(command.getSrcPile() + dice.getFace(2)).peek().getCheckerTemplate() == players[2].getCheckerTemplate())
 								&& point.size() == 1 && (isPathClear(command.getSrcPile(), command.getSrcPile() + dice.getFace(1)) || isPathClear(command.getSrcPile(), command.getSrcPile() + dice.getFace(2)))
@@ -407,7 +439,7 @@ public class Board {
 								}
 						}
 					}
-					if (dice.getFace(1) == dice.getFace(2) && dice.getMoveStep(1) != 0) {
+					if (dice.getFace(1) == dice.getFace(2) && dice.getStepVal(1) != 0) {
 						boolean validMove = true;
 						boolean isValidStep = true;
 						boolean shouldBreak = false;
@@ -417,7 +449,7 @@ public class Board {
 								isLegal = true;
 								dice.decreaseNumMoves(1);
 							}
-							for (int i = 2; i <= dice.getMoveStep(1) && !shouldBreak; i++)
+							for (int i = 2; i <= dice.getStepVal(1) && !shouldBreak; i++)
 								if (command.getSrcPile() == maxpoint && command.getSrcPile() + 1 < command.getDestPile() + dice.getFace(1) * i) {
 									for (int j = 1; j <= i - 1 && command.getSrcPile() - dice.getFace(1) * j >= 0; j++) {
 										isValidStep = points.get(command.getSrcPile() - dice.getFace(1) * j).empty() || points.get(command.getSrcPile() - dice.getFace(1) * j).peek().getCheckerTemplate() == players[1].getCheckerTemplate();
@@ -449,7 +481,7 @@ public class Board {
 								isLegal = true;
 								dice.decreaseNumMoves(1);
 							}
-							for (int i = 2; i <= dice.getMoveStep(1) && !shouldBreak; i++)
+							for (int i = 2; i <= dice.getStepVal(1) && !shouldBreak; i++)
 								if (command.getSrcPile() == maxpoint && command.getSrcPile() + dice.getFace(1) * i > command.getDestPile() + 23) {
 									for (int j = 1; j <= i - 1 && command.getSrcPile() + dice.getFace(1) * j <= 23; j++) {
 										isValidStep = points.get(command.getSrcPile() + dice.getFace(1) * j).empty() || points.get(command.getSrcPile() + dice.getFace(1) * j).peek().getCheckerTemplate() == players[2].getCheckerTemplate();
@@ -484,11 +516,11 @@ public class Board {
 				if (bars.get(getPlayerNumber()).empty() && frompoint.peek().getCheckerTemplate() == players[0].getCheckerTemplate() && (topoint.empty() || topoint.size() == 1 || frompoint.peek().getCheckerTemplate() == topoint.peek().getCheckerTemplate()) && dice.getNumMoves() != 0) {
 					if (dice.getFace(1) != dice.getFace(2)) {
 						for (int i = 1; i <= 2; i++)
-							if (dice.getMoveStep(i) != 0 && (players[0] == players[1] && command.getSrcPile() == command.getDestPile() + dice.getFace(i) || players[0] == players[2] && command.getSrcPile() + dice.getFace(i) == command.getDestPile())) {
+							if (dice.getStepVal(i) != 0 && (players[0] == players[1] && command.getSrcPile() == command.getDestPile() + dice.getFace(i) || players[0] == players[2] && command.getSrcPile() + dice.getFace(i) == command.getDestPile())) {
 								isLegal = true;
 								dice.decreaseNumMoves(i);
 							}
-						if (dice.getMoveStep(1) != 0 && dice.getMoveStep(2) != 0
+						if (dice.getStepVal(1) != 0 && dice.getStepVal(2) != 0
 						&& (players[0] == players[1] && command.getSrcPile() == command.getDestPile() + dice.getFace(1) + dice.getFace(2) && (points.get(command.getSrcPile() - dice.getFace(1)).empty() || points.get(command.getSrcPile() - dice.getFace(2)).empty() || points.get(command.getSrcPile() - dice.getFace(1)).peek().getCheckerTemplate() == players[1].getCheckerTemplate() || points.get(command.getSrcPile() - dice.getFace(2)).peek().getCheckerTemplate() == players[1].getCheckerTemplate())
 						|| players[0] == players[2] && command.getSrcPile() + dice.getFace(1) + dice.getFace(2) == command.getDestPile() && (points.get(command.getSrcPile() + dice.getFace(1)).empty() || points.get(command.getSrcPile() + dice.getFace(2)).empty() || points.get(command.getSrcPile() + dice.getFace(1)).peek().getCheckerTemplate() == players[2].getCheckerTemplate() || points.get(command.getSrcPile() + dice.getFace(2)).peek().getCheckerTemplate() == players[2].getCheckerTemplate()))) {
 							isLegal = true;
@@ -496,7 +528,7 @@ public class Board {
 							dice.decreaseNumMoves(2);
 						}
 					}
-					if (dice.getFace(1) == dice.getFace(2) && dice.getMoveStep(1) != 0) {
+					if (dice.getFace(1) == dice.getFace(2) && dice.getStepVal(1) != 0) {
 						boolean validMove = true;
 						boolean isValidStep = true;
 						if (players[0] == players[1]) {
@@ -504,7 +536,7 @@ public class Board {
 								isLegal = true;
 								dice.decreaseNumMoves(1);
 							}
-							for (int i = 2; i <= dice.getMoveStep(1); i++) {
+							for (int i = 2; i <= dice.getStepVal(1); i++) {
 								if (command.getSrcPile() == command.getDestPile() + dice.getFace(1) * i) {
 									for (int j = 1; j <= i - 1; j++) {
 										isValidStep = points.get(command.getSrcPile() - dice.getFace(1) * j).empty() || points.get(command.getSrcPile() - dice.getFace(1) * j).peek().getCheckerTemplate() == players[1].getCheckerTemplate();
@@ -525,7 +557,7 @@ public class Board {
 								isLegal = true;
 								dice.decreaseNumMoves(1);
 							}
-							for (int i = 2; i <= dice.getMoveStep(1); i++) {
+							for (int i = 2; i <= dice.getStepVal(1); i++) {
 								if (command.getSrcPile() + dice.getFace(1) * i == command.getDestPile()) {
 									for (int j = 1; j <= i - 1; j++) {
 										isValidStep = points.get(command.getSrcPile() + dice.getFace(1) * j).empty() || points.get(command.getSrcPile() + dice.getFace(1) * j).peek().getCheckerTemplate() == players[2].getCheckerTemplate();

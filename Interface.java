@@ -44,25 +44,26 @@ public class Interface {
 
 	// start menu - options to start or exit the game
 	public void starterScreen () { 
-		System.out.println("Enter START to start the game or enter QUIT to exit");
+		System.out.println("Enter START to start the game, enter QUIT to exit or enter HINT to view controls");
+	}
+	
+	public void printInvalidCmd(){
+		System.out.println("Invalid command, enter HINT to view controls or try again.");
 	}
 
-	
 	public void displayBoard (Board board){
-
-		
-		String numberStringCurrentPlayerPips = Integer.toString(board.getPlayer(0).getPips());
-		String numberStringPlayerREDScore = Integer.toString(board.getPlayer(1).getScore());
-		String numberStringPlayerWHITEScore = Integer.toString(board.getPlayer(2).getScore());
-		String numberStringMatch = Integer.toString(board.getMatchNumber());
-		String numberStringMatchRound = Integer.toString(board.getMatchRound());
-		int numberSpacesCurrentPlayerPips = 4 - numberStringCurrentPlayerPips.length();
-		int numberSpacesPlayerREDScoreFormer = 7 - numberStringPlayerREDScore.length() / 2;
-		int numberSpacesPlayerREDScoreLater = 8 - (numberStringPlayerREDScore.length() + 1) / 2;
-		int numberSpacesPlayerWHITEScoreFormer = 7 - numberStringPlayerWHITEScore.length() / 2;
-		int numberSpacesPlayerWHITEScoreLater = 8 - (numberStringPlayerWHITEScore.length() + 1) / 2;
-		int numberSpacesMatch = 5 - numberStringMatch.length();
-		int numberSpacesMatchRound = 5 - numberStringMatchRound.length();
+		String currentPipString = Integer.toString(board.getPlayer(0).getPips());
+		String redPipString = Integer.toString(board.getPlayer(1).getScore());
+		String whitePipString = Integer.toString(board.getPlayer(2).getScore());
+		String matchNum = Integer.toString(board.getMatchNumber());
+		String roundNum = Integer.toString(board.getMatchRound());
+		int numberSpacesCurrentPlayerPips = 4 - currentPipString.length();
+		int numberSpacesPlayerREDScoreFormer = 7 - redPipString.length() / 2;
+		int numberSpacesPlayerREDScoreLater = 8 - (redPipString.length() + 1) / 2;
+		int numberSpacesPlayerWHITEScoreFormer = 7 - whitePipString.length() / 2;
+		int numberSpacesPlayerWHITEScoreLater = 8 - (whitePipString.length() + 1) / 2;
+		int numberSpacesMatch = 5 - matchNum.length();
+		int numberSpacesMatchRound = 5 - roundNum.length();
 		int numberUppoints = Math.max(board.getSize("uppoint"),1);
 		int numberDownpoints = Math.max(board.getSize("downpoint"),1);
 		System.out.println("|---------------------------------------------------------------------|");
@@ -236,51 +237,29 @@ public class Interface {
 		System.out.println("|");
 		System.out.println("|---------------------------------------------------------------------|---------------|");
 		// end of bottom portion
-
-
-
-		/* Example board (for formatting purposes)
-		 * 
-		 * 		
-		 * 
-		System.out.print("  \n \n \n \n \n ");
-		// printing the player board
-		System.out.println("|---------------------------------------------------------------------|");
-		System.out.println("| [0;37m13   14   15   16   17   18[0m | [0;37mB2[0m | [0;37m19   20   21   22   23   24[0m |    | ");
-		System.out.println( "| [0;31m12   11   10   09   08   07[0m | [0;37mB2[0m | [0;31m06   05   04   03   02   01[0m |    |\n" + //
-							"| [0;37mo[0m                  [0;31mo[0m        |    | [0;31mo[0m                         [0;37mo[0m |    |\n" + //
-							"| [0;37mo[0m                  [0;31mo[0m        |    | [0;31mo[0m                         [0;37mo[0m |    |\n" + //
-							"| [0;37mo[0m                  [0;31mo[0m        |    | [0;31mo[0m                           |    |\n" + //
-							"| [0;37mo[0m                           |    | [0;31mo[0m                           |    |\n" + //
-							"| [0;37mo[0m                           |    | [0;31mo[0m                           |    |\n" + //
-							"|-----------------------------|----|-----------------------------|----|\n" + //
-							"| [0;31mo[0m                           |    | [0;37mo[0m                           |    |\n" + //
-							"| [0;31mo[0m                           |    | [0;37mo[0m                           |    |\n" + //
-							"| [0;31mo[0m                   [0;37mo[0m       |    | [0;37mo[0m                           |    |\n" + //
-							"| [0;31mo[0m                   [0;37mo[0m       |    | [0;37mo[0m                         [0;31mo[0m |    |\n" + //
-							"| [0;31mo[0m                   [0;37mo[0m       |    | [0;37mo[0m                         [0;31mo[0m |    |\n" + //
-							"| [0;37m12   11   10   09   08   07[0m | [0;31mB1[0m | [0;37m06   05   04   03   02   01[0m |    | \n" + //
-							"| [0;31m13   14   15   16   17   18[0m | [0;31mB1[0m | [0;31m19   20   21   22   23   24[0m |    |");
-
-		 * 
-		 * 
-		 */
-
-
-
-
-
-
-
 	}
 
+	// print a list of available commands
+	public void controls () { 
+		System.out.println("START: (Re)Start Backgammon game.");
+		System.out.println("ROLL: Roll the dice.");
+		System.out.println("ROLL + 2 digits: Set the numbers you roll");
+		System.out.println("QUIT: Quit the game.");
+		System.out.println("PIP: View both players' pips.");
+		System.out.println("HINT: Print controls.");
+		System.out.println("2 digits (from) + 2 digits (to): Move checkers between points.");
+		System.out.println("B + 1 digit + 2 digits: Move a checker from bar to a point.");
+		System.out.println("2 digits + E + 1 digit: Move a checker from a point to the endpoint.");
+		System.out.println("1 digit or 2 digits: Move a checker by the suggested move list.");
+		System.out.println("M: Print legal moves.");
+	}
 
 	// prints the result after dice rolled
-	public void printDice (int face1, int face2) { 
-		if (face1 != face2) {
-			System.out.println("The number of 2 dice thrown are " + face1 + " and " + face2 + ". You can move 2 times");
-		} else if (face1 == face2)
-			System.out.println("The number of 2 dice thrown are " + face1 + " and " + face2 + ". You can move 4 times");
+	public void printDice (int firstFace, int secondFace) { 
+		if (firstFace != secondFace) {
+			System.out.println("The number of 2 dice thrown are " + firstFace + " and " + secondFace + ". You can move 2 times");
+		} else if (firstFace == secondFace)
+			System.out.println("The number of 2 dice thrown are " + firstFace + " and " + secondFace + ". You can move 4 times");
 	}
 
 	// decide who plays first based on roll
@@ -300,8 +279,6 @@ public class Interface {
 	}
 
 
-
-
 	public void GameOver (Board board) { // Display a message when the whole match is over
 		if (board.getPlayer(1).getScore() > board.getPlayer(2).getScore()) {
 			System.out.println(board.getPlayer(1).dispName() + " wins the game!.");
@@ -312,18 +289,85 @@ public class Interface {
 		System.out.println("Game over.");
 	}
 
-
-	public void displayQuit () { // Display a message when the user quits
+	// print message to the screen when user quits
+	public void displayQuit () { 
 		System.out.println("You Quit. Loser");
 	}
 	
-	public void playerTurnCurrent (Player player) { // Display a message when the current player's turn is over
-		System.out.println(player + "(" + player.getColourString() + ") finishes moving. ☺ ");
+	 // print message when the current player's turn is over
+	public void currentTurnOver (Player player) {
+		System.out.println(player + " " + player.getColourString() + "  finishes their move. ☺ ");
 	}
 	
-	public void playerTurnNext (Player player) { // Display a message when the next player's turn starts
-		System.out.println("Now it's the " + player + "(" + player.getColourString() + ")'s turn to play. Lets go !");
+	// print message when it's the next player's turn
+	public void nextPlayerTurn (Player player) { 
+		System.out.println("Now it's " + player + " " + player.getColourString() + " 's turn to move. Lets go !");
 	}
 
+	 // print each player's pips
+	public void printPips (Board board) {
+	System.out.println(board.getPlayer(1).dispName() + "'s pips are " + board.getPlayer(1).getPips() + ".");
+	System.out.println(board.getPlayer(2).dispName() + "'s pips are " + board.getPlayer(2).getPips() + ".");
+	}
+
+
+	public void showLegalMoves(Board board){
+		String formattedString, inString;
+		int firstStep, secondStep;
+		int outputCount = 0;
+	 	String[] startPos = new String[25];
+	    String[] endPos = new String[25];
+	    if (board.getPlayer(0) == board.getPlayer(1)) {
+	    	startPos[0] = "B1";
+			endPos[24] = "E1";
+		    for (int i = 1; i <= 24; i++) {
+		        startPos[25 - i] = String.format("%02d", i);
+		        endPos[24 - i] = String.format("%02d", i);
+		    }
+	    } else if (board.getPlayer(0) == board.getPlayer(2)) {
+	    	startPos[0] = "B2";
+		    endPos[24] = "E2";
+		    for (int i = 1; i <= 24; i++) {
+		    	startPos[25 - i] = String.format("%02d", i);
+		        endPos[24 - i] = String.format("%02d", i);
+		    }
+	    }
+	    for (int i = 0; i < InputCheck.getLegalMoves().length; i++)
+	        InputCheck.setLegalMoves(i, null);
+	    for (int i = 0; i < startPos.length; i++)
+	        for (int j = i; j < endPos.length; j++) {
+	        	formattedString = startPos[i] + endPos[j];
+	        	inString = formattedString;
+                if (board.getPlayer(0) == board.getPlayer(2)) {
+                	String tempStart = startPos[i];
+                    String tempEnd = endPos[j];
+					if (startPos[i].matches("\\d+")) {
+						int number1 = Integer.parseInt(startPos[i]);
+						tempStart = String.format("%02d", 25 - number1);
+					}
+					if (endPos[j].matches("\\d+")) {
+						int number2 = Integer.parseInt(endPos[j]);
+						tempEnd = String.format("%02d", 25 - number2);
+					}
+					formattedString = tempStart + tempEnd;
+                }
+				input = new InputCheck(formattedString);
+                firstStep = board.getDiceMoveStep(1);
+                secondStep = board.getDiceMoveStep(2);
+                if (board.moveisLegal(input)) {
+                	InputCheck.setLegalMoves(outputCount, formattedString);
+                	outputCount++;
+                	if (outputCount == 1)
+                    	System.out.println("Here are the legal moves available:");
+                	if (outputCount > 0 && outputCount < 10)
+                		System.out.print(" ");
+                    System.out.println(outputCount + ": " + inString);
+                }
+                board.setDiceStepVals(firstStep, secondStep);
+	        }
+	    if (outputCount == 0)
+        	System.out.println("No possible moves");
+	
+	}
 
 }

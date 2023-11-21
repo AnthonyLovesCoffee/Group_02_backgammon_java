@@ -9,57 +9,76 @@ public class Game {
         intface.gameWelcome();
         intface.starterScreen();
         do {
-			boolean commandDone = false;
+			boolean cmdEntered = false;
 			do {
 				command = intface.getUserInput();
 
                 // when user has started the game 
-				if (startControl == 1 && !board.isMatchOver())
+				if (startControl == 1 && !board.isMatchOver()){
 					if (command.roll()) {
 						board.rollDice();
 						intface.printDice(board.getDiceFace(1), board.getDiceFace(2));
 						intface.displayBoard(board);
-						commandDone = true;
+						intface.showLegalMoves(board);
+						cmdEntered = true;
 					} 
 					 else if (command.start()) {
                         intface.starterScreen();
 						startControl--;
-						commandDone = true;
+						cmdEntered = true;
 					} else if (command.quit()) {
-						commandDone = true;
-					}  
+						cmdEntered = true;
+					} else if (command.move()) {
+						if (board.moveisLegal(command)) {
+							board.move(command);
+							board.calcPips();
+							intface.displayBoard(board);
+							if (board.getTotalNumMoves() != 0) {
+								intface.showLegalMoves(board);
+							} else if (board.getTotalNumMoves() == 0)
+								board.endTurn();
+							cmdEntered = true;
+						} else
+							intface.printInvalidCmd();
+					
 					if (!board.isMatchOver() && matchOverDisplayed){
 					    if (command.start()) {
 							startControl--;
 							matchOverDisplayed = false;
-							commandDone = true;
+							cmdEntered = true;
 						} else if (command.quit())
-							commandDone = true;
+							cmdEntered = true;
 					if (!matchOverDisplayed  && !command.start())
 						matchOverDisplayed = true;
+						}
+					}
 				}
-                // if user has not started a game yet
+				// if user has not started a game yet
 				if (startControl == 0) {
 					if (command.start()) {
-                        intface.starterScreen();
-						intface.gameIntro(board);
+                        intface.gameIntro(board);
 						board.initBoard();
+						board.calcPips();
 						intface.firstTurn(board);
 						intface.printDice(board.getDiceFace(1), board.getDiceFace(2));
 						intface.displayBoard(board);
+						intface.showLegalMoves(board);
 						startControl++;
-						commandDone = true;
+						cmdEntered = true;
 					} 
-					 else if (command.quit())
-						commandDone = true;
+					else if (command.quit()){
+						cmdEntered = true;
+					}
+					else if (command.showHint()) {
+						intface.controls();
+					}
 				}
-			} while (!commandDone);
-		} 
-        while (!command.quit() && !board.isMatchOver());
+			} while (!cmdEntered);
+		} while (!command.quit() && !board.isMatchOver());
+        
 		if (board.isMatchOver()) {
 			intface.GameOver(board);
 		} else
 			intface.displayQuit();
 	}
 }
-

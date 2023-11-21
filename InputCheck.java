@@ -6,13 +6,15 @@ public class InputCheck {
         START,
         PIP,
         HINT,
-        SHOWPOSSIBLEMOVES
+        SHOWLEGALMOVES,
+        SETDICE
     };
 
     private gameCommand command; // 3 possible commands
     private int[] faces;
     private String srcPile, destPile;
     private static String[] legalMoves = new String[100];
+    private String[] dice;
 
     // parse user's input and assigning values to appropiate variable
     InputCheck(String input){
@@ -29,18 +31,37 @@ public class InputCheck {
         else if (inputUpper.equals("PIP")){
             command = gameCommand.PIP;
         }
+        else if (inputUpper.equals("HINT")){
+            command = gameCommand.HINT;
+        }
+        else if (inputUpper.equals("MOVES")) {
+			command = gameCommand.SHOWLEGALMOVES;
+		}
         else if (inputUpper.equals("([1-9]|0[1-9]|[1-9][0-9])") && legalMoves[Integer.parseInt(inputUpper) - 1] != null){
             command = gameCommand.MOVE;
             srcPile = legalMoves[Integer.parseInt(inputUpper) - 1].substring(0,2); ;
             srcPile = legalMoves[Integer.parseInt(inputUpper) - 1].substring(2,4); 
         }
+        else if (inputUpper.matches("R[1-6][1-6]")) {
+			command = gameCommand.SETDICE;
+			dice[0] = inputUpper.substring(1, 2);
+			dice[1] = inputUpper.substring(2, 3);
+			faces[0] = Integer.parseInt(dice[0]);
+			faces[1] = Integer.parseInt(dice[1]);
+        }
+        else if (inputUpper.matches("(0[1-9]|1[0-9]|2[0-4]|B[1-2])(0[1-9]|1[0-9]|2[0-4]|E[1-2])")) {
+			command = gameCommand.MOVE;
+			srcPile = inputUpper.substring(0, 2);
+			destPile = inputUpper.substring(2, 4);
+        }
     }
-
     // check if input is valid move/command
     public static boolean validMove(String input){
         String inputUpper = input.toUpperCase().trim();
         return (inputUpper.equals("QUIT")) || (inputUpper.equals("ROLL")) ||
-                (inputUpper.matches("START"));
+                (inputUpper.matches("START")) || (inputUpper.equals("PIP")) || (inputUpper.equals("HINT")) 
+                || (inputUpper.equals("MOVES")) || inputUpper.matches("R[1-6][1-6]") || inputUpper.matches("(0[1-9]|1[0-9]|2[0-4]|B[1-2])(0[1-9]|1[0-9]|2[0-4]|E[1-2])") 
+                || input.matches("([1-9]|0[1-9]|[1-9][0-9])") && legalMoves[Integer.parseInt(input) - 1] != null;
     }
 
     // checking source of move
@@ -91,12 +112,15 @@ public class InputCheck {
     public boolean showPip(){
         return command == gameCommand.PIP;
     }
-    public boolean showHints(){
+    public boolean showHint(){
         return command == gameCommand.HINT;
     }
-    public boolean showPossibleMoves(){
-        return command == gameCommand.SHOWPOSSIBLEMOVES;
+    public boolean showLegalMoves(){
+        return command == gameCommand.SHOWLEGALMOVES;
     }
+    public boolean setDice () { // Checks if the command is a SETFACE command.
+		return command == gameCommand.SETDICE;
+	}
 
     // return the index of the source pile
     public int getSrcPile() {
@@ -128,7 +152,7 @@ public class InputCheck {
 	}
 
     // adds all the legal moves at an index to array
-    public static void setAllowedMoves (int i, String legalMove) { 
+    public static void setLegalMoves (int i, String legalMove) { 
 		legalMoves[i] = legalMove;
 	}
 	

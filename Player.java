@@ -30,9 +30,8 @@ public class Player {
     public int getPips(){ 
         return pips;
     }
-
-     // sets the player's pips
+    // sets the player's pips
     public void setPips (int pips) {
     this.pips = pips;
-}
+    }
 }
