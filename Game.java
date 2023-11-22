@@ -22,25 +22,37 @@ public class Game {
 						intface.showLegalMoves(board);
 						cmdEntered = true;
 					} 
-					 else if (command.start()) {
+					else if (command.start()) {
                         intface.starterScreen();
 						startControl--;
 						cmdEntered = true;
-					} else if (command.quit()) {
+					} 
+					else if (command.quit()) {
 						cmdEntered = true;
-					} else if (command.move()) {
+					} 
+					else if (command.move()) {
 						if (board.moveisLegal(command)) {
 							board.move(command);
 							board.calcPips();
 							intface.displayBoard(board);
 							if (board.getTotalNumMoves() != 0) {
 								intface.showLegalMoves(board);
-							} else if (board.getTotalNumMoves() == 0)
+							} 
+							else if (board.getTotalNumMoves() == 0){
 								board.endTurn();
+							}
 							cmdEntered = true;
-						} else
+						} 
+						else {
 							intface.printInvalidCmd();
-					
+						}
+					}
+					else if (command.showHint()) {
+						intface.controls();
+					}
+					else if (command.showPip()) {
+						intface.printPips(board);
+					}
 					if (!board.isMatchOver() && matchOverDisplayed){
 					    if (command.start()) {
 							startControl--;
@@ -48,11 +60,13 @@ public class Game {
 							cmdEntered = true;
 						} else if (command.quit())
 							cmdEntered = true;
-					if (!matchOverDisplayed  && !command.start())
+					}
+					if (!matchOverDisplayed  && !command.start()){
 						matchOverDisplayed = true;
-						}
 					}
 				}
+					
+				
 				// if user has not started a game yet
 				if (startControl == 0) {
 					if (command.start()) {
@@ -72,13 +86,18 @@ public class Game {
 					else if (command.showHint()) {
 						intface.controls();
 					}
+					else if (command.showPip()) {
+						intface.printPips(board);
+					}
 				}
 			} while (!cmdEntered);
 		} while (!command.quit() && !board.isMatchOver());
         
 		if (board.isMatchOver()) {
 			intface.GameOver(board);
-		} else
+		} 
+		else {
 			intface.displayQuit();
+		}		
 	}
 }

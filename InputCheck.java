@@ -42,17 +42,17 @@ public class InputCheck {
             srcPile = legalMoves[Integer.parseInt(inputUpper) - 1].substring(0,2); ;
             srcPile = legalMoves[Integer.parseInt(inputUpper) - 1].substring(2,4); 
         }
+        else if (inputUpper.matches("(0[1-9]|1[0-9]|2[0-4]|B[1-2])(0[1-9]|1[0-9]|2[0-4]|E[1-2])")) {
+			command = gameCommand.MOVE;
+			srcPile = inputUpper.substring(0, 2);
+			destPile = inputUpper.substring(2, 4);
+        }
         else if (inputUpper.matches("R[1-6][1-6]")) {
 			command = gameCommand.SETDICE;
 			dice[0] = inputUpper.substring(1, 2);
 			dice[1] = inputUpper.substring(2, 3);
 			faces[0] = Integer.parseInt(dice[0]);
 			faces[1] = Integer.parseInt(dice[1]);
-        }
-        else if (inputUpper.matches("(0[1-9]|1[0-9]|2[0-4]|B[1-2])(0[1-9]|1[0-9]|2[0-4]|E[1-2])")) {
-			command = gameCommand.MOVE;
-			srcPile = inputUpper.substring(0, 2);
-			destPile = inputUpper.substring(2, 4);
         }
     }
     // check if input is valid move/command
