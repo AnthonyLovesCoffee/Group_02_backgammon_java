@@ -96,15 +96,6 @@ public class InputCheck {
         };
     }
 
-    public static String recText(String input) { // recievesa the text from the input string if it's a text command.
-    String inputFormatted = input.trim();
-    if (inputFormatted.length() > 5) {
-        return inputFormatted.substring(5);
-    } else 
-        return ""; // Only for Test.
-}
-
-
     // boolean methods 
     public boolean move(){
         return command == gameCommand.MOVE;
@@ -130,10 +121,6 @@ public class InputCheck {
     public boolean setDice () { // Checks if the command is a SETFACE command.
 		return command == gameCommand.SETDICE;
 	}
-    public boolean checkText(String input){
-        String trimmed = input.trim();
-        return trimmed.matches("test:(.+\\.txt)");
-    }
 
     // return the index of the source pile
     public int getSrcPile() {
