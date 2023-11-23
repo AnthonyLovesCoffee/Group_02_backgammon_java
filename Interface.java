@@ -1,3 +1,4 @@
+import java.io.InputStream;
 import java.util.*;
 
 public class Interface {
@@ -11,18 +12,44 @@ public class Interface {
         key = new Scanner(System.in);
     }
 
+	Interface(InputStream inputStream){
+        key = new Scanner(inputStream);
+    }
+
 	// display message when game starts
     public void gameWelcome(){
         System.out.println("Welcome to Backgammon");
     }
 
-    public InputCheck getUserInput() {
+    public InputCheck getUserInput(Board board) {
 		boolean keyEntered = false;
 		do {
 			System.out.print("Enter command: ");
 			String in = key.nextLine();
 			if (InputCheck.validMove(in)) {
 				input = new InputCheck(in);
+				// check the input is a move command
+				if (input.move()) {
+					String inputUpper = in.trim().toUpperCase();
+					// check the input is a 4-char command and is the current player
+					if (inputUpper.length() == 4 && board.getPlayer(0) == board.getPlayer(2)) {
+						String[] inputs = new String[2];
+						inputs[0] = inputUpper.substring(0, 2);
+						inputs[1] = inputUpper.substring(2, 4);
+						// check if first part of the input is a number and convert it
+						if (inputs[0].matches("\\d+")) {
+							int num1 = Integer.parseInt(inputs[0]);
+							inputs[0] = String.format("%02d", 25 - num1);
+						}
+						// check if second part of the input is a number and convert it
+						if (inputs[1].matches("\\d+")) {
+							int num2 = Integer.parseInt(inputs[1]);
+							inputs[1] = String.format("%02d", 25 - num2);
+						}
+						inputUpper = inputs[0] + inputs[1];
+					}
+					input = new InputCheck(inputUpper);
+				}
 				keyEntered = true;
 			} else {
 				System.out.println("The command is invalid. Try again.");
@@ -30,7 +57,8 @@ public class Interface {
 		}
 		while (!keyEntered);
 		return input;
-    }
+	}
+	
 
 	// initial screen to get player names 
 	public void gameIntro(Board board){

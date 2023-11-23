@@ -11,7 +11,7 @@ public class Game {
         do {
 			boolean cmdEntered = false;
 			do {
-				command = intface.getUserInput();
+				command = intface.getUserInput(board);
 
                 // when user has started the game 
 				if (startControl == 1 && !board.isMatchOver()){

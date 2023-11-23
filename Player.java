@@ -32,6 +32,9 @@ public class Player {
     }
     // sets the player's pips
     public void setPips (int pips) {
-    this.pips = pips;
+        this.pips = pips;
+    }
+    public String toString () {
+        return checkerTemp.getDisplay() + name + InterfaceColours.RESET + "{" + this.pips + "} pips";
     }
 }
