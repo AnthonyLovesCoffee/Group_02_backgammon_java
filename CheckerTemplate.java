@@ -2,8 +2,8 @@
 
 public enum CheckerTemplate {
 
-    WHITE("W", InterfaceColours.WHITE + " ●" + InterfaceColours.RESET, InterfaceColours.WHITE),
-    RED("R", InterfaceColours.RED + " ●"+ InterfaceColours.RESET, InterfaceColours.RED);
+    WHITE("W", InterfaceColours.WHITE + " o" + InterfaceColours.RESET, InterfaceColours.WHITE),
+    RED("R", InterfaceColours.RED + " o"+ InterfaceColours.RESET, InterfaceColours.RED);
 
     private String colour, symbol, display;
 

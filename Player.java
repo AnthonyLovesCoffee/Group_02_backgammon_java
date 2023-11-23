@@ -35,6 +35,6 @@ public class Player {
         this.pips = pips;
     }
     public String toString () {
-        return checkerTemp.getDisplay() + name + InterfaceColours.RESET + "{" + this.pips + "} pips";
+        return checkerTemp.getDisplay() + name + InterfaceColours.RESET + " {" + this.pips + "} pips";
     }
 }

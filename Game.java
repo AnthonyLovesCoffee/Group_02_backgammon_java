@@ -53,6 +53,9 @@ public class Game {
 					else if (command.showPip()) {
 						intface.printPips(board);
 					}
+					else if (command.showLegalMoves()){
+						intface.showLegalMoves(board);
+					}
 					if (!board.isMatchOver() && matchOverDisplayed){
 					    if (command.start()) {
 							startControl--;
