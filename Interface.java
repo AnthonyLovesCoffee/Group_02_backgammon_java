@@ -1,3 +1,8 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 public class Interface {
@@ -32,14 +37,77 @@ public class Interface {
 		return input;
     }
 
+
+
+
+		public String readFile(String string, Scanner in, String promptMessage) { // Read content as input from a file
+	    boolean fileReadSuccess = false;
+	    String fileContent = "";
+	    do {
+	        String fileName = input.recText(string);
+	        File dir = new File(".");
+	        File[] exactMatches = dir.listFiles((dir1, name) -> name.equals(fileName));
+	        File[] caseInsensitiveMatches = dir.listFiles((dir1, name) -> name.equalsIgnoreCase(fileName));
+	        if (!((caseInsensitiveMatches != null && caseInsensitiveMatches.length > 0) && !(exactMatches != null && exactMatches.length > 0))) {
+	            try {
+	                BufferedReader br = new BufferedReader(new FileReader(fileName));
+	                StringBuilder fileContentBuilder = new StringBuilder();
+	                String line;
+	                while ((line = br.readLine()) != null)
+	                    fileContentBuilder.append(line).append("\n");
+	                br.close();
+	                fileContent = fileContentBuilder.toString().trim(); // Store the file content
+	                fileReadSuccess = true;
+	            } catch (FileNotFoundException e) {
+	                System.out.println("Error: File not found - " + e.getMessage());
+	            } catch (IOException e) {
+	                System.out.println("Error reading file: " + e.getMessage());
+	            }
+	        } else {
+	            System.out.println("A file exists with only the case of the file name different from the input file name.");
+	        }
+	        if (!fileReadSuccess) {
+	            System.out.print(promptMessage);
+	            if (in.hasNextLine()) { // Add a condition to check if the Scanner has the next line
+	                string = in.nextLine();
+	            } else
+	                break; // If there's no next line, break the loop
+	        }
+	    } while (!fileReadSuccess);
+	    return fileContent;
+	}
+
 	// initial screen to get player names 
 	public void gameIntro(Board board){
+		boolean correctInput = false;
+		String lengthMsg = "Enter length of Match	";
 		System.out.print("Enter name of Player 1: ");
 		board.initPlayer(1);
 		System.out.println("Player 1: " + board.getPlayer(1).dispName() + ", Colour: RED");
 		System.out.print("Enter name of Player 2: ");
 		board.initPlayer(2);
 		System.out.println("Player 2: " + board.getPlayer(2).dispName() + ", Colour: WHITE");
+		while (!correctInput) {
+            System.out.print(lengthMsg);
+            String matchNumberInput = key.nextLine();
+    		if (input.checkText(matchNumberInput))
+    			matchNumberInput = readFile(matchNumberInput, key, "Please enter a new length of the match: ");
+            try {
+                double doubleValue = Double.parseDouble(matchNumberInput);
+                if (doubleValue > 0 && Math.floor(doubleValue) == doubleValue) {
+                    board.setMatchNumber((int) doubleValue);
+                    board.setMatchRound(1);
+                    correctInput = true;
+                } else if (Math.floor(doubleValue) != doubleValue) {
+                    System.out.println("Error: The entered number is a decimal, please try again.");
+                } else {
+                    System.out.println("Error: The entered number is not a positive integer, please try again.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Error: The entered string cannot be converted to a number, please try again.");
+            }
+            lengthMsg = "Please enter a new length of the match:";
+        }
 	}
 
 	// start menu - options to start or exit the game
