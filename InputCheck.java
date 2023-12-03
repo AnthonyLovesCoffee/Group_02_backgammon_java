@@ -96,6 +96,12 @@ public class InputCheck {
         };
     }
 
+
+    public static boolean ifText (String input) { // Checks if the input string represents a text command.
+		String inputFormatted = input.trim();
+		return inputFormatted.matches("test:(.+\\.txt)");
+	}
+
     public static String recText(String input) { // recievesa the text from the input string if it's a text command.
     String inputFormatted = input.trim();
     if (inputFormatted.length() > 5) {

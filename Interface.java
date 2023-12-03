@@ -31,6 +31,8 @@ public class Interface {
 		do {
 			System.out.print("Enter command: ");
 			String in = key.nextLine();
+			if (InputCheck.ifText(in))
+				in = readFile(in, key, "Please enter a new command: "); // takes in file and executes command
 			if (InputCheck.validMove(in)) {
 				input = new InputCheck(in);
 				// check the input is a move command
