@@ -31,6 +31,9 @@ public class Game {
 						if (board.moveisLegal(command)) {
 							board.move(command);
 							board.calcPips();
+							if (board.isRoundOver()){
+								board.addScore();
+							}
 							intface.displayBoard(board);
 							if (board.getTotalNumMoves() != 0) {
 								intface.showLegalMoves(board);
@@ -51,6 +54,23 @@ public class Game {
 						board.setFace(command);
 						intface.displayBoard(board);
 						intface.showLegalMoves(board);
+						cmdEntered = true;
+					} else if(command.skip()){
+						intface.printSkip(board);
+						board.addRoundNumber();
+						if(!board.isGameOver()){
+							board.initBoard();
+							board.calcPips();
+							intface.firstTurn(board);
+							intface.printDice(board.getFace(1), board.getFace(2));
+							intface.displayBoard(board);
+							intface.showLegalMoves(board);
+						}
+						cmdEntered = true;
+					} else if(command.forfeit()){
+						intface.forfeitTurn(board.getPlayer(0));
+						board.endTurn();
+						board.setZeroDice();
 						cmdEntered = true;
 					}
 					if (!board.isGameOver() && matchOverDisplayed) {

@@ -134,7 +134,7 @@ public class Board {
 
 	// return if game is over
 	public boolean isGameOver(){
-		return gameNumber + 1 == roundNumber;
+		return roundNumber + 1 == gameNumber;
 	}
 
 	public void setCurrentPlayer(int playerIndex) {
@@ -218,6 +218,9 @@ public class Board {
 	public void rollDice() {
 		dice.roll();
 	}
+	public void setZeroDice(){
+		dice.setDiceZero();
+	}
 
 	public Stack<Checker> getPoint(int i) {
 		return points.get(i);
@@ -235,21 +238,26 @@ public class Board {
 	public int getRoundNumber() {
 		return roundNumber;
 	}
-
 	public void setRoundNumber(int matchnum) {
 		this.roundNumber = matchnum;
 	}
-
 	public int getRound() {
 		return roundNumber;
 	}
-
 	public void setRound(int roundnum) {
 		this.roundNumber = roundnum;
 	}
-
 	public void addRoundNumber() {
 		roundNumber++;
+	}
+
+	// score methods
+	public void setZeroScore(){
+		players[1].setScore(0);
+		players[2].setScore(0);
+	}
+	public void addScore(){
+		players[0].setScore(10);
 	}
 
 	// return size of the largest stack for given index

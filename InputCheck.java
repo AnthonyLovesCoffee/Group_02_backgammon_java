@@ -9,7 +9,7 @@ public class InputCheck {
         SHOWLEGALMOVES,
         SETDICE,
         FORFEIT,
-        HIT
+        SKIP
     };
 
     private gameCommand command; // 3 possible commands
@@ -44,8 +44,8 @@ public class InputCheck {
         else if (inputUpper.equals("FORFEIT")) {
             command = gameCommand.FORFEIT;
         }
-        else if (inputUpper.equals("HIT")) {
-            command = gameCommand.HIT;
+        else if (inputUpper.equals("SKIP")) {
+            command = gameCommand.SKIP;
         }
         else if (inputUpper.equals("([1-9]|0[1-9]|[1-9][0-9])") && legalMoves[Integer.parseInt(inputUpper) - 1] != null){
             command = gameCommand.MOVE;
@@ -68,9 +68,9 @@ public class InputCheck {
     // check if input is valid move/command
     public static boolean validMove(String input){
         String inputUpper = input.toUpperCase().trim();
-        return (inputUpper.equals("QUIT")) || (inputUpper.equals("ROLL")) ||
-                (inputUpper.matches("START")) || (inputUpper.equals("PIP")) || (inputUpper.equals("HINT")) 
-                || (inputUpper.equals("MOVES")) || inputUpper.matches("ROLL[1-6][1-6]") 
+        return (inputUpper.equals("QUIT")) || (inputUpper.equals("ROLL")) || (inputUpper.equals("FORFEIT"))
+                || (inputUpper.equals("START")) || (inputUpper.equals("PIP")) || (inputUpper.equals("HINT")) 
+                || (inputUpper.equals("MOVES")) || inputUpper.matches("ROLL[1-6][1-6]") || (inputUpper.equals("SKIP"))
                 || inputUpper.matches("(0[1-9]|1[0-9]|2[0-4]|B[1-2])(0[1-9]|1[0-9]|2[0-4]|E[1-2])") 
                 || input.matches("([1-9]|0[1-9]|[1-9][0-9])") && legalMoves[Integer.parseInt(input) - 1] != null;
     }
@@ -147,6 +147,13 @@ public class InputCheck {
     public boolean setDice () { 
 		return command == gameCommand.SETDICE;
 	}
+    public boolean skip(){
+        return command == gameCommand.SKIP;
+    }
+    public boolean forfeit(){
+        return command == gameCommand.FORFEIT;
+    }
+
     public boolean checkText(String input){
         String trimmed = input.trim();
         return trimmed.matches("test:(.+\\.txt)");

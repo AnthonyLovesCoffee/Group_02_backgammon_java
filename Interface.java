@@ -104,6 +104,11 @@ public class Interface {
 		return fileContent;
 	}
 
+	// print a message when player skips their turn
+	public void forfeitTurn(Player player){
+		System.out.println(player + " forfeits their turn.");
+	}
+
 	// initial screen to get player names
 	public void gameIntro(Board board) {
 		boolean correctInput = false;
@@ -353,12 +358,13 @@ public class Interface {
 		System.out.println("PIP: View both players' pips.");
 		System.out.println("HINT: Print controls.");
 		System.out.println("MOVES: Print legal moves.");
+		System.out.println("SKIP: End current round and play next round.");
+		System.out.println("FORFEIT: Forfeit current move.");
 		System.out.println("Enter \"file:file_name.txt\" will run the commands in that file");
 		System.out.println("2 digits (from) + 2 digits (to): Move checkers between points.");
 		System.out.println("B + 1 digit + 2 digits: Move a checker from bar to a point.");
 		System.out.println("2 digits + E + 1 digit: Move a checker from a point to the endpoint.");
 		System.out.println("1 digit or 2 digits: Move a checker by the suggested move list.");
-
 	}
 
 	// prints the result after dice rolled
@@ -372,8 +378,7 @@ public class Interface {
 	}
 
 	// decide who plays first based on roll
-	public void firstTurn(Board board) { // Determine the first player based on the first dice roll and will set current
-											// player
+	public void firstTurn(Board board) {
 		do {
 			board.rollDice();
 			if (board.getFace(1) > board.getFace(2)) {
@@ -391,7 +396,7 @@ public class Interface {
 		} while (board.getFace(1) == board.getFace(2));
 	}
 
-	public void GameOver(Board board) { // Display a message when the whole match is over
+	public void GameOver(Board board) { 
 		if (board.getPlayer(1).getScore() > board.getPlayer(2).getScore()) {
 			System.out.println(board.getPlayer(1).dispName() + " wins the game!.");
 		} else if (board.getPlayer(1).getScore() < board.getPlayer(2).getScore()) {
@@ -422,6 +427,7 @@ public class Interface {
 		System.out.println(board.getPlayer(2).dispName() + "'s pips are " + board.getPlayer(2).getPips() + ".");
 	}
 
+	// print all legal moves
 	public void showLegalMoves(Board board) {
 		String formattedString, inString;
 		int firstStep, secondStep;
@@ -481,4 +487,29 @@ public class Interface {
 
 	}
 
+	// print message when the match round is forced to end early
+	public void printSkip (Board board) {
+		System.out.println("The current round was skipped so no points awarded.");
+		if (board.getRoundNumber() == 1) {
+			System.out.println("There are " + board.getRoundNumber() + " total rounds, therefore the game is over.");
+		} else if (board.getRoundNumber() > 1)
+			System.out.print("There are " + board.getRoundNumber() + " total rounds, ");
+		if (board.getRoundNumber() - board.getRound() == 1) {
+			System.out.println("so there is still " + (board.getRoundNumber() - board.getRound()) + " remaining rounds.");
+		} else if (board.getRoundNumber() - board.getRound() > 1)
+			System.out.println("so there are still " + (board.getRoundNumber() - board.getRound()) + " remaining rounds.");
+	}
+
+	// print message when a round is over
+	public void roundOver(Board board){
+		System.out.println("Round " + board.getRound() + " over. " + board.getPlayer(0).getColourString() + " wins this round!");
+		if (board.getRoundNumber() == 1) {
+			System.out.println("There is " + board.getRoundNumber() + " round in total, so now the game is over.");
+		} else if (board.getRoundNumber() > 1)
+			System.out.print("There are " + board.getRoundNumber() + " rounds in total, ");
+		if (board.getRoundNumber() - board.getRound() == 1) {
+			System.out.println("so there is still " + (board.getRoundNumber() - board.getRound()) + " round left. Type SKIP to move onto the next round!");
+		} else if (board.getRoundNumber() - board.getRound() > 1)
+			System.out.println("so there are still " + (board.getRoundNumber() - board.getRound()) + " rounds left to play. Type SKIP to move onto the next round!");
+	}
 }
