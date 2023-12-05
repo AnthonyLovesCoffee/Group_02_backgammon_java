@@ -8,6 +8,7 @@ public class Dice {
 
     Dice(){
         rand = new Random();
+        intrface = new Interface();
         this.faces = new int[2];
         this.numSteps = new int[2];
 
@@ -15,6 +16,7 @@ public class Dice {
         numSteps[1] = 1;
 
         numMoves = numSteps[0] + numSteps[1];
+
         faces[0] = rand.nextInt(1, 7);
         faces[1] = rand.nextInt(1, 7);
         if (faces[0] == faces[1]) {
@@ -28,7 +30,9 @@ public class Dice {
     public void roll () { 
     	numSteps[0] = 1;
     	numSteps[1] = 1;
+
     	numMoves = numSteps[0] + numSteps[1];
+
     	faces[0] = rand.nextInt(1, 7);
         faces[1] = rand.nextInt(1, 7);
         if (faces[0] == faces[1]) {
@@ -38,21 +42,23 @@ public class Dice {
         }
     }
 
-    public void setFace (int face1, int face2) { // Sets the face values of the dice and updates the move values accordingly.
+    // specifiy face values of the dice and updates number of moves
+    public void setFace (int f1, int f2) { 
     	numSteps[0] = 1;
     	numSteps[1] = 1;
     	numMoves = numSteps[0] + numSteps[1];
-        faces[0] = face1;
-        faces[1] = face2;
+        faces[0] = f1;
+        faces[1] = f2;
         if (faces[0] == faces[1]) {
         	numSteps[0] = 4;
         	numSteps[1] = 0;
         	numMoves = numSteps[0] + numSteps[1];
         }
-        intrface.printDice(face1, face2);
+        intrface.printDice(f1, f2);
     }
 
-    public int getFace (int index) { // face on dice(index)
+    // face on dice(index)
+    public int getFace (int index) { 
     	return switch (index) {
 			case 1 -> faces[0];
 			case 2 -> faces[1];
@@ -87,6 +93,17 @@ public class Dice {
     // getter to return total number of moves
     public int getNumMoves(){
         return numMoves;
+    }
+
+    // set all dice to 0
+    public void setDiceZero(){
+        numSteps[0] = 0;
+        numSteps[1] = 0;
+
+        numMoves = numSteps[0] + numSteps[1];
+
+        faces[0] = 0;
+        faces[1] = 0;
     }
 }
 
