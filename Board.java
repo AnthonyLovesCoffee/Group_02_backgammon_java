@@ -1,3 +1,4 @@
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -16,8 +17,8 @@ public class Board {
 	private Interface intrface;
 	private Scanner input;
 	private Dice dice;
-	private int matchRoundNumber = 1;
-	private int matchNumber;
+	private int roundNumber = 1;
+	private int gameNumber;
 
 	Board() {
 		intrface = new Interface();
@@ -41,6 +42,12 @@ public class Board {
 			endpoints.add(new Stack<>());
 		}
 	}
+
+	// testing function
+	public Board (InputStream inStream) { 
+        this.input = new Scanner(inStream);
+        this.players = new Player[3];
+    }
 
 	// initialize the board
 	public void initBoard() {
@@ -70,11 +77,13 @@ public class Board {
 
 	// initialise player given index in array
 	public void initPlayer(int playerIndex) {
-		String playerName = input.nextLine();
+		String nameString = input.nextLine();
+		if (InputCheck.text(nameString))
+			nameString = intrface.readFile(nameString, input, "Please enter new player name: ");
 		if (playerIndex == 1) {
-			players[playerIndex] = new Player(playerName, CheckerTemplate.RED);
+			players[playerIndex] = new Player(nameString, CheckerTemplate.RED);
 		} else if (playerIndex == 2)
-			players[playerIndex] = new Player(playerName, CheckerTemplate.WHITE);
+			players[playerIndex] = new Player(nameString, CheckerTemplate.WHITE);
 	}
 
 	// return player object at given index
@@ -111,16 +120,21 @@ public class Board {
 	}
 
 	// set the value of each dice step
-	public void setDiceStepVals(int stepOne, int stepTwo) { 
+	public void setDiceStepVals(int stepOne, int stepTwo) {
 		dice.setStepVal(stepOne, stepTwo);
 	}
 
-	// return if game is over
-	public boolean isMatchOver() {
+	// return if one round is over
+	public boolean isRoundOver() {
 		for (Stack<Checker> endpoint : endpoints)
 			if (endpoint.size() == 15)
 				return true;
 		return false;
+	}
+
+	// return if game is over
+	public boolean isGameOver(){
+		return gameNumber + 1 == roundNumber;
 	}
 
 	public void setCurrentPlayer(int playerIndex) {
@@ -128,18 +142,20 @@ public class Board {
 	}
 
 	// end current player's turn
-	public void endTurn() { 
-		if (!isMatchOver()) {
+	public void endTurn() {
+		if (!isRoundOver()) {
 			if (players[0] == players[1]) {
 				players[0] = players[2];
 				intrface.currentTurnOver(players[1]);
 				intrface.nextPlayerTurn(players[2]);
-			} else if (players[0] == players[2]) {
+			} 
+			else if (players[0] == players[2]) {
 				players[0] = players[1];
 				intrface.currentTurnOver(players[2]);
 				intrface.nextPlayerTurn(players[1]);
 			}
-		} else if (isMatchOver()) {
+		} 
+		else if (isRoundOver()) {
 			if (players[0] == players[1]) {
 				intrface.currentTurnOver(players[1]);
 			} else if (players[0] == players[2])
@@ -147,12 +163,12 @@ public class Board {
 		}
 	}
 
-	private boolean isPathClear(int start, int end) {
-		if (start < 0)
-			start = 0;
-		if (end > 23)
-			end = 23;
-		for (int i = start + 1; i < end; i++) {
+	private boolean isPointClear(int src, int dest) {
+		if (src < 0)
+			src = 0;
+		if (dest > 23)
+			dest = 23;
+		for (int i = src + 1; i < dest; i++) {
 			if (!points.get(i).empty() && points.get(i).peek().getCheckerTemplate() == players[0].getCheckerTemp()) {
 				return false;
 			}
@@ -165,10 +181,10 @@ public class Board {
 		return dice.getNumMoves();
 	}
 
-	private int getPlayerNumber() { // Get the player number
+	private int getPlayerNumber() { 
 		if (players[0].getCheckerTemplate() == CheckerTemplate.WHITE) {
 			return 1;
-		} else // players[0].getCheckerTemplate() == PieceEntity.R
+		} else // otherwise RED
 			return 0;
 	}
 
@@ -215,21 +231,25 @@ public class Board {
 		return endpoints.get(i);
 	}
 
-	// match and round methods
-	public int getMatchNumber() {
-		return matchNumber;
+	// game and round methods
+	public int getRoundNumber() {
+		return roundNumber;
 	}
-	public void setMatchNumber(int matchnum) {
-		this.matchNumber = matchnum;
+
+	public void setRoundNumber(int matchnum) {
+		this.roundNumber = matchnum;
 	}
-	public int getMatchRound() {
-		return matchRoundNumber;
+
+	public int getRound() {
+		return roundNumber;
 	}
-	public void setMatchRound(int roundnum) {
-		this.matchRoundNumber = roundnum;
+
+	public void setRound(int roundnum) {
+		this.roundNumber = roundnum;
 	}
-	public void addMatchNumber(){
-		matchRoundNumber++;
+
+	public void addRoundNumber() {
+		roundNumber++;
 	}
 
 	// return size of the largest stack for given index
@@ -452,8 +472,8 @@ public class Board {
 												|| points.get(command.getSrcPile() - dice.getFace(2)).peek()
 														.getCheckerTemplate() == players[1].getCheckerTemplate())
 										&& point.size() == 1
-										&& (isPathClear(command.getSrcPile() - dice.getFace(1), command.getSrcPile())
-												|| isPathClear(command.getSrcPile() - dice.getFace(2),
+										&& (isPointClear(command.getSrcPile() - dice.getFace(1), command.getSrcPile())
+												|| isPointClear(command.getSrcPile() - dice.getFace(2),
 														command.getSrcPile()))
 										|| command.getSrcPile() + 1 == command.getDestPile() + dice.getFace(1)
 												+ dice.getFace(2)
@@ -497,8 +517,8 @@ public class Board {
 												|| points.get(command.getSrcPile() + dice.getFace(2)).peek()
 														.getCheckerTemplate() == players[2].getCheckerTemplate())
 										&& point.size() == 1
-										&& (isPathClear(command.getSrcPile(), command.getSrcPile() + dice.getFace(1))
-												|| isPathClear(command.getSrcPile(),
+										&& (isPointClear(command.getSrcPile(), command.getSrcPile() + dice.getFace(1))
+												|| isPointClear(command.getSrcPile(),
 														command.getSrcPile() + dice.getFace(2)))
 										|| command.getSrcPile() + dice.getFace(1)
 												+ dice.getFace(2) == command.getDestPile() + 23
@@ -537,7 +557,7 @@ public class Board {
 														.getCheckerTemplate() == players[1].getCheckerTemplate();
 										validMove = validMove && isValidStep;
 									}
-									isValidStep = point.size() == 1 && isPathClear(
+									isValidStep = point.size() == 1 && isPointClear(
 											command.getSrcPile() - dice.getFace(1) * (i - 1), command.getSrcPile());
 									validMove = validMove && isValidStep;
 									if (validMove) {
@@ -578,7 +598,7 @@ public class Board {
 														.getCheckerTemplate() == players[2].getCheckerTemplate();
 										validMove = validMove && isValidStep;
 									}
-									isValidStep = point.size() == 1 && isPathClear(command.getSrcPile(),
+									isValidStep = point.size() == 1 && isPointClear(command.getSrcPile(),
 											command.getSrcPile() + dice.getFace(1) * (i - 1));
 									validMove = validMove && isValidStep;
 									if (validMove) {

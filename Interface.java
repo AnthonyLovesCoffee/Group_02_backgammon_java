@@ -122,8 +122,8 @@ public class Interface {
 			try {
 				double doubleValue = Double.parseDouble(matchNumberInput);
 				if (doubleValue > 0 && Math.floor(doubleValue) == doubleValue) {
-					board.setMatchNumber((int) doubleValue);
-					board.setMatchRound(1);
+					board.setRoundNumber((int) doubleValue);
+					board.setRound(1);
 					correctInput = true;
 				} else if (Math.floor(doubleValue) != doubleValue) {
 					System.out.println("Error: The entered number is a decimal, please try again.");
@@ -150,8 +150,8 @@ public class Interface {
 		String currentPipString = Integer.toString(board.getPlayer(0).getPips());
 		String redPipString = Integer.toString(board.getPlayer(1).getScore());
 		String whitePipString = Integer.toString(board.getPlayer(2).getScore());
-		String matchNum = Integer.toString(board.getMatchNumber());
-		String roundNum = Integer.toString(board.getMatchRound());
+		String matchNum = Integer.toString(board.getRoundNumber());
+		String roundNum = Integer.toString(board.getRound());
 		int numberSpacesCurrentPlayerPips = 4 - currentPipString.length();
 		int numberSpacesPlayerREDScoreFormer = 7 - redPipString.length() / 2;
 		int numberSpacesPlayerREDScoreLater = 8 - (redPipString.length() + 1) / 2;

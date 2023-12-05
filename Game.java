@@ -13,8 +13,8 @@ public class Game {
 			do {
 				command = intface.getUserInput(board);
 
-				// when user has started the game
-				if (startControl == 1 && !board.isMatchOver()) {
+				// when user has started a round
+				if (startControl == 1 && !board.isRoundOver()) {
 					if (command.roll()) {
 						board.rollDice();
 						intface.printDice(board.getFace(1), board.getFace(2));
@@ -53,7 +53,7 @@ public class Game {
 						intface.showLegalMoves(board);
 						cmdEntered = true;
 					}
-					if (!board.isMatchOver() && matchOverDisplayed) {
+					if (!board.isGameOver() && matchOverDisplayed) {
 						if (command.start()) {
 							startControl--;
 							matchOverDisplayed = false;
@@ -87,9 +87,9 @@ public class Game {
 					}
 				}
 			} while (!cmdEntered);
-		} while (!command.quit() && !board.isMatchOver());
+		} while (!command.quit() && !board.isGameOver());
 
-		if (board.isMatchOver()) {
+		if (board.isGameOver()) {
 			intface.GameOver(board);
 		} else {
 			intface.displayQuit();

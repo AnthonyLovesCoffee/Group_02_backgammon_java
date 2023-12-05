@@ -30,9 +30,16 @@ public class Player {
     public int getPips(){ 
         return pips;
     }
-    // sets the player's pips
+    // setter functions
     public void setPips (int pips) {
         this.pips = pips;
+    }
+    public void setScore(int score){
+        this.score = score;
+    }
+
+    public void addScore(int score){
+        this.score += score;
     }
     public String toString () {
         return checkerTemp.getDisplay() + name + InterfaceColours.RESET + " {" + this.pips + "} pips";
