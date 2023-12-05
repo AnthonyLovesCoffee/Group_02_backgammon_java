@@ -345,11 +345,11 @@ public class Interface {
 		System.out.println("PIP: View both players' pips.");
 		System.out.println("HINT: Print controls.");
 		System.out.println("MOVES: Print legal moves.");
+		System.out.println("Enter \"file:file_name.txt\" will run the commands in that file");
 		System.out.println("2 digits (from) + 2 digits (to): Move checkers between points.");
 		System.out.println("B + 1 digit + 2 digits: Move a checker from bar to a point.");
 		System.out.println("2 digits + E + 1 digit: Move a checker from a point to the endpoint.");
 		System.out.println("1 digit or 2 digits: Move a checker by the suggested move list.");
-		System.out.println("Entering \"file:file_name.txt\" will run the commands in that file");
 		
 	}
 
