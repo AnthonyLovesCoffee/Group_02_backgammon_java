@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class Interface {
-	private final static String BLANK = " ";
 	private final static String BLANK2 = "  ";
 	private final static String BLANK3 = "   ";
 	Scanner key;
@@ -69,7 +68,7 @@ public class Interface {
 		boolean fileReadSuccess = false;
 		String fileContent = "";
 		do {
-			String fileName = input.recText(string);
+			String fileName = InputCheck.recText(string);
 			File dir = new File(".");
 			File[] exactMatches = dir.listFiles((dir1, name) -> name.equals(fileName));
 			File[] caseInsensitiveMatches = dir.listFiles((dir1, name) -> name.equalsIgnoreCase(fileName));
@@ -112,7 +111,7 @@ public class Interface {
 	// initial screen to get player names
 	public void gameIntro(Board board) {
 		boolean correctInput = false;
-		String lengthMsg = "Enter length of Match	";
+		String lengthMsg = "Enter length of Match: ";
 		System.out.print("Enter name of Player 1: ");
 		board.initPlayer(1);
 		System.out.println("Player 1: " + board.getPlayer(1).dispName() + ", Colour: RED");
@@ -127,7 +126,7 @@ public class Interface {
 			try {
 				double doubleValue = Double.parseDouble(matchNumberInput);
 				if (doubleValue > 0 && Math.floor(doubleValue) == doubleValue) {
-					board.setRoundNumber((int) doubleValue);
+					board.setGameNumber((int) doubleValue);
 					board.setRound(1);
 					correctInput = true;
 				} else if (Math.floor(doubleValue) != doubleValue) {
@@ -155,18 +154,47 @@ public class Interface {
 		String currentPipString = Integer.toString(board.getPlayer(0).getPips());
 		String redPipString = Integer.toString(board.getPlayer(1).getScore());
 		String whitePipString = Integer.toString(board.getPlayer(2).getScore());
-		String matchNum = Integer.toString(board.getRoundNumber());
+		String matchNum = Integer.toString(board.getGameNumber());
 		String roundNum = Integer.toString(board.getRound());
 		int numberSpacesCurrentPlayerPips = 4 - currentPipString.length();
 		int numberSpacesPlayerREDScoreFormer = 7 - redPipString.length() / 2;
 		int numberSpacesPlayerREDScoreLater = 8 - (redPipString.length() + 1) / 2;
 		int numberSpacesPlayerWHITEScoreFormer = 7 - whitePipString.length() / 2;
 		int numberSpacesPlayerWHITEScoreLater = 8 - (whitePipString.length() + 1) / 2;
-		int numberSpacesMatch = 5 - matchNum.length();
-		int numberSpacesMatchRound = 5 - roundNum.length();
+		int numberSpacesGame = 5 - matchNum.length();
+		int numberSpacesRound = 5 - roundNum.length();
 		int numberUppoints = Math.max(board.getSize("uppoint"), 1);
 		int numberDownpoints = Math.max(board.getSize("downpoint"), 1);
-		System.out.println("|---------------------------------------------------------------------|");
+
+
+
+		// Start of Very top Portion
+
+
+
+
+
+
+		System.out.println("|---------------------------------------------------------------------|---------------|");
+		if (board.getPlayer(0).getColourString() == "R") {
+			System.out.print("| Current player's color: " + InterfaceColours.RED  + board.getPlayer(0).getColourString() + InterfaceColours.RESET + "                                 pips: " + board.getPlayer(0).getPips());
+		} else if (board.getPlayer(0).getColourString() == "W")
+			System.out.print("| Current player's color: " + InterfaceColours.WHITE  + board.getPlayer(0).getColourString() + InterfaceColours.RESET + "                                 pips: " + board.getPlayer(0).getPips());
+		for (int i = 0; i < numberSpacesCurrentPlayerPips; i++)
+            System.out.print(" ");
+		System.out.print("|    Game: " + board.getGameNumber());
+		for (int i = 0; i < numberSpacesGame; i++)
+            System.out.print(" ");
+		System.out.println("|");
+
+
+
+
+
+
+
+
+		System.out.println("|---------------------------------------------------------------------|---------------|");
 		// print dice results
 		if (board.getFace(1) != board.getFace(2)) {
 			System.out.print("| Dice:                     ");
@@ -208,6 +236,11 @@ public class Interface {
 			System.out.print("           |\n");
 		}
 
+		System.out.print("   Round: " + board.getRoundNumber());
+		for (int i = 0; i < numberSpacesRound; i++)
+            System.out.print(" ");
+		//System.out.println("|");
+
 		// Printing Current player (Current player is indicated)
 		if (board.getPlayer(0).getColourString() == "RED") {
 			board.calcPips(); // calulates pip before printing
@@ -221,6 +254,10 @@ public class Interface {
 					+ "                             pips:  " + board.getPlayer(0).getPips() + "|\n");
 		}
 
+
+
+		// End of Very top Portion
+
 		// Top portion of board
 		System.out.println("|");
 		System.out.println("|---------------------------------------------------------------------|---------------|");
@@ -228,7 +265,7 @@ public class Interface {
 				+ " | " + InterfaceColours.WHITE + "B2" + InterfaceColours.RESET + " | " + InterfaceColours.WHITE
 				+ "19   20   21   22   23   24" + InterfaceColours.RESET + " | " + InterfaceColours.RED + "E1"
 				+ InterfaceColours.RESET + " |   " + InterfaceColours.RED + board.getPlayer(1).getColourString()
-				+ InterfaceColours.RESET + " Score   |");
+				+ InterfaceColours.RESET + " Score     |");
 		System.out.print("| " + InterfaceColours.RED + "12   11   10   09   08   07" + InterfaceColours.RESET);
 		System.out.print(" | " + InterfaceColours.WHITE + "B2" + InterfaceColours.RESET + " | ");
 		System.out.print(InterfaceColours.RED + "06   05   04   03   02   01" + InterfaceColours.RESET + " | "
@@ -334,7 +371,7 @@ public class Interface {
 		System.out.print(" | " + InterfaceColours.RED + "B1" + InterfaceColours.RESET + " | ");
 		System.out.println(InterfaceColours.WHITE + "06   05   04   03   02   01" + InterfaceColours.RESET + " | "
 				+ InterfaceColours.WHITE + "E2" + InterfaceColours.RESET + " |  " + InterfaceColours.WHITE
-				+ board.getPlayer(2).getColourString() + InterfaceColours.RESET + " Score  |");
+				+"  "+ board.getPlayer(2).getColourString() + InterfaceColours.RESET + "  Score   |");
 		System.out.print("| " + InterfaceColours.RED + "13   14   15   16   17   18" + InterfaceColours.RESET + " | "
 				+ InterfaceColours.RED + "B1" + InterfaceColours.RESET + " | " + InterfaceColours.RED
 				+ "19   20   21   22   23   24" + InterfaceColours.RESET + " | " + InterfaceColours.WHITE + "E2"

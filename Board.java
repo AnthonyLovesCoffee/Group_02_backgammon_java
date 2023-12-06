@@ -238,9 +238,6 @@ public class Board {
 	public int getRoundNumber() {
 		return roundNumber;
 	}
-	public void setRoundNumber(int matchnum) {
-		this.roundNumber = matchnum;
-	}
 	public int getRound() {
 		return roundNumber;
 	}
@@ -250,6 +247,14 @@ public class Board {
 	public void addRoundNumber() {
 		roundNumber++;
 	}
+	public int getGameNumber () { 
+		return gameNumber;
+	}
+	public void setGameNumber (int gameNumber) { 
+		this.gameNumber = gameNumber;
+	}
+	
+
 
 	// score methods
 	public void setZeroScore(){
