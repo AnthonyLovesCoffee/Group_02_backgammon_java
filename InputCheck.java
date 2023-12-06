@@ -47,7 +47,7 @@ public class InputCheck {
         else if (inputUpper.equals("SKIP")) {
             command = gameCommand.SKIP;
         }
-        else if (inputUpper.equals("([1-9]|0[1-9]|[1-9][0-9])") && legalMoves[Integer.parseInt(inputUpper) - 1] != null){
+        else if (inputUpper.matches("([1-9]|0[1-9]|[1-9][0-9])") && legalMoves[Integer.parseInt(inputUpper) - 1] != null){
             command = gameCommand.MOVE;
             srcPile = legalMoves[Integer.parseInt(inputUpper) - 1].substring(0,2);
             destPile = legalMoves[Integer.parseInt(inputUpper) - 1].substring(2,4); 
