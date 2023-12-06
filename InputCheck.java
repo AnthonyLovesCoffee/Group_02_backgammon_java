@@ -1,5 +1,5 @@
 public class InputCheck {
-    private enum gameCommand{
+    public enum gameCommand{
         MOVE,
         ROLL,
         QUIT,
@@ -12,7 +12,7 @@ public class InputCheck {
         SKIP
     };
 
-    private gameCommand command; // 3 possible commands
+    private gameCommand command; // all possible commands
     private int[] faces;
     private String srcPile, destPile;
     private static String[] legalMoves = new String[100];
@@ -196,5 +196,10 @@ public class InputCheck {
     // returns array of legal moves
 	public static String[] getLegalMoves () { 
 		return legalMoves;
+	}
+
+    // METHODS FOR UNIT TESTING
+    public gameCommand getCommand () { 
+	    return command;
 	}
 }
