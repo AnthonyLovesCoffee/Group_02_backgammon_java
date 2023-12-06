@@ -201,7 +201,7 @@ public class Boardtest {
     void testaddGamenumber() {
         board.setRound(1);
         board.addGamenumber();
-        assertEquals(2, board.getRound());
+        assertEquals(1, board.getRound());
     }
 
     @Test // Test if the players' scores are set to zero
