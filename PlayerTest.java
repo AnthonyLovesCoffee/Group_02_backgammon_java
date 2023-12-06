@@ -57,7 +57,7 @@ class PlayerTest {
     
     // test to checkset,  add and get score
     @Test 
-    void testAddScore() {
+    void testSetAndAddScore() {
         player.setScore(10);
         player.addScore(5);
         assertEquals(15, player.getScore());
