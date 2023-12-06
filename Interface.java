@@ -443,6 +443,11 @@ public class Interface {
 		System.out.println("Game over.");
 	}
 
+	public void displayRestart () { // Displays a message when the game is restarted.
+		System.out.println("The game starts over from the beginning!");
+	}
+	
+
 	// print message to the screen when user quits
 	public void displayQuit() {
 		System.out.println("You Quit. Loser");
