@@ -99,19 +99,6 @@ public class Board {
 
 
 
-	// return if one round is over
-	public boolean isRoundOver() {
-		for (Stack<Checker> endpoint : endpoints)
-			if (endpoint.size() == 15)
-				return true;
-		return false;
-	}
-
-	// return if game is over
-	public boolean isGameOver(){
-		return roundNumber + 1 == gameNumber;
-	}
-
 	public void setCurrentPlayer(int playerIndex) {
 		this.players[0] = players[playerIndex];
 	}
@@ -255,10 +242,18 @@ public class Board {
 	public void setGameNumber (int gameNumber) { 
 		this.gameNumber = gameNumber;
 	}
-	public void addGamenumber(){
+	public boolean isRoundOver() {
+		for (Stack<Checker> endpoint : endpoints)
+			if (endpoint.size() == 15)
+				return true;
+		return false;
+	}
+	public boolean isGameOver(){
+		return gameNumber + 1 == roundNumber;
+	}
+		public void addGamenumber(){
 		gameNumber++;
 	}
-	
 
 
 	// score methods
