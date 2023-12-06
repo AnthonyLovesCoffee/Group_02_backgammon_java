@@ -7,38 +7,42 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 
-public class Boardtest {
+public class BoardTest {
     
     private Board board;
-    private InputCheck command;
+    private InputCheck cmd;
 
+    // setting up a board with users and specified roll before each test
     @BeforeEach
     void setUp() {
         board = new Board();
-        board.setPlayer(1, new Player("Player 1", CheckerTemplate.RED)); // Initialize players with the virtual inputs
-	    board.setPlayer(2, new Player("Player 2", CheckerTemplate.WHITE));
+        board.setPlayer(1, new Player("Anthony", CheckerTemplate.RED));
+	    board.setPlayer(2, new Player("Stephen", CheckerTemplate.WHITE));
 	    board.setCurrentPlayer(1);
-	    command = new InputCheck("R12"); // Create a command with 2 dice numbers as specified for the move
-        board.setFace(command); // Set the dice face values
+	    cmd = new InputCheck("ROLL12"); 
+        board.setFace(cmd);
         board.initBoard();
-        board.setGameNumber(3);
+        board.setGameNumber(2);
     }
 
-    @Test // Test if the board object is created
+    // test to ensure that the board object is successfully created
+    @Test 
     void testBoard() {
         assertNotNull(board);
     }
 
-    @Test // Test if the board object is created with an InputStream
+    // test creation of a Board object simulating user inputs
+    @Test 
     void testBoardInputStream() {
-        InputStream inputStream = new ByteArrayInputStream("Player 1\nPlayer 2\n5\n".getBytes());
+        InputStream inputStream = new ByteArrayInputStream("Ant\nSte\n5\n".getBytes());
         Board boardWithInputStream = new Board(inputStream);
         assertNotNull(boardWithInputStream);
     }
 
-    @Test // Test if the players are initialized correctly
-    void testInitializePlayer() {
-    	InputStream inputStream = new ByteArrayInputStream("Player 1\nPlayer 2\n".getBytes(StandardCharsets.UTF_8));
+    // test initialization of players, checking their instance and types
+    @Test
+    void testInitPlayer() {
+    	InputStream inputStream = new ByteArrayInputStream("Ant\nSte\n".getBytes(StandardCharsets.UTF_8));
 		board = new Board(inputStream);
         board.initPlayer(1);
         assertNotNull(board.getPlayer(1));
@@ -48,14 +52,16 @@ public class Boardtest {
         assertEquals(CheckerTemplate.WHITE, board.getPlayer(2).getCheckerTemp());
     }
 
-    @Test // Test if the end turn function updates the current player correctly
+    // test ending a turn and switching to the next player
+    @Test 
 	void testEndTurn() {
 		board.endTurn();
 		assertEquals(board.getPlayer(0), board.getPlayer(2));
 	}
 
-    @Test // Test if the board is initialized correctly
-    void testInitializeBoard() {
+    // test the initial setup, verifying correct position and number of checkers
+    @Test 
+    void testInitBoard() {
         assertEquals(2, board.getPoint(0).size());
         assertEquals(CheckerTemplate.WHITE, board.getPoint(0).peek().getCheckerTemplate());
         assertEquals(3, board.getPoint(7).size());
@@ -64,34 +70,32 @@ public class Boardtest {
         assertEquals( CheckerTemplate.RED, board.getPoint(12).peek().getCheckerTemplate());
     }
 
-    @Test // Test if a move is possible based on the given command
-    void testMoveIsPossible() {
-        command = new InputCheck("2423");
-        assertTrue(board.moveisLegal(command));
+    // test if move is legal based on the current state of the board and given command
+    @Test 
+    void testLegalMove() {
+        cmd = new InputCheck("2423");
+        assertTrue(board.moveisLegal(cmd));
     }
 
-    @Test // Test move() method
+    // test the move method
+    @Test 
     void testMove() {
-        command = new InputCheck("2423");
-        board.move(command); // Perform the move
+        cmd = new InputCheck("2423");
+        board.move(cmd); 
         assertEquals(1, board.getPoint(22).size());
         assertEquals(1, board.getPoint(23).size());
     }
 
-    @Test // Test setDiceFace() method
-    void testSetDiceFace() {
-        assertEquals(1, board.getFace(1)); // Assert the expected result
+    // test retrieval of dice face values after a roll
+    @Test 
+    void testGetFace() {
+        assertEquals(1, board.getFace(1)); 
         assertEquals(2, board.getFace(2));
     }
 
-    @Test // Test getFace() method
-    void testgetFace() {
-        assertEquals(1, board.getFace(1)); // Assert the expected result
-        assertEquals(2, board.getFace(2));
-    }
-
-    @Test // Test isOneMatchOver() method
-    void testIsOneMatchOver() {
+    // test to check if a round is marked as over based on board state
+    @Test 
+    void testRoundOver() {
     	for (int i = 0; i < 24; i++)
 	        board.getPoint(i).clear();
 	    for (int i = 0; i < 2; i++)
@@ -105,135 +109,136 @@ public class Boardtest {
 		assertEquals(15, board.getEndpoint(0).size());
     }
 
-    @Test // Test isWholeMatchOver() method
-    void testIsWholeMatchOver() {
-    	for (int i = 0; i < 3; i++)
-    		board.addRoundNumber();
+    // test to ensure game over conditions are correct
+    @Test 
+    void testGameOver() {
+        board.addRoundNumber();
+        board.addRoundNumber();
     	assertEquals(board.getGameNumber() + 1, board.getRoundNumber());
     }
 
-    @Test // Test getSize() method
+    // test to verify the correct size of specific points on the board
+    @Test 
     void testGetSize() {
-        assertEquals(5, board.getSize("uppoint")); // Assert the expected result for upLane and downLane
+        assertEquals(5, board.getSize("uppoint")); 
         assertEquals(5, board.getSize("downpoint"));
     }
 
-    @Test // Test calculateSetPips() method
-    void testCalculateSetPips() {
-        command = new InputCheck("2423");
-        board.move(command); // Perform the move
-        command = new InputCheck("2422");
-        board.move(command);
-        board.calcPips(); // Calculate the set pips
-        assertEquals(164, board.getPlayer(1).getPips()); // Assert the expected result
+    // test the pip calculation
+    @Test 
+    void testCalcPips() {
+        cmd = new InputCheck("2423");
+        board.move(cmd); 
+        cmd = new InputCheck("2422");
+        board.move(cmd);
+        board.calcPips(); 
+        assertEquals(164, board.getPlayer(1).getPips()); 
         assertEquals(167, board.getPlayer(2).getPips());
     }
 
-    @Test // Test if the dice roll generates a non-zero dice move number
-    void testMakeDiceRoll() {
+    // test rolling the dice
+    @Test 
+    void testRollDice() {
         board.rollDice();
         assertNotEquals(0, board.getTotalNumMoves());
     }
 
-    @Test // Test if the sum of the dice move steps is returned correctly
+    // test to return num moves after setting dice values
+    @Test
     void testgetTotalNumMoves() {
         board.setDiceStepVals(3, 4);
         assertEquals(7, board.getTotalNumMoves());
     }
 
-    @Test // Test if the dice move number is set to zero
-    void testMakeDiceSetZero() {
+    // test to set dice to 0
+    @Test 
+    void testSetZeroDice() {
         board.setZeroDice();
         assertEquals(0, board.getTotalNumMoves());
     }
 
-    @Test // Test if the correct player is returned
+    // test to check if return player works
+    @Test 
     void testGetPlayer() {
         Player player1 = board.getPlayer(1);
-        assertEquals(InterfaceColours.RED + "Player 1" + InterfaceColours.RESET, player1.dispName());
+        assertEquals(InterfaceColours.RED + "Anthony" + InterfaceColours.RESET, player1.dispName());
     }
 
-    @Test // Test if the current player is set correctly
+    // test to check if setting current player works
+    @Test 
     void testSetCurrentPlayer() {
         board.setCurrentPlayer(2);
-        assertEquals(InterfaceColours.WHITE + "Player 2" + InterfaceColours.RESET, board.getPlayer(0).dispName());
+        assertEquals(InterfaceColours.WHITE + "Stephen" + InterfaceColours.RESET, board.getPlayer(0).dispName());
     }
 
-    @Test // Test if a valid lane is returned
-    void testgetPoint() {
+    // test to cehck that a point on the board is initialized
+    @Test 
+    void testGetPoint() {
         assertNotNull(board.getPoint(1));
     }
 
-    @Test // Test if a valid bar is returned
+    // testing getter methods
+    @Test 
     void testGetBar() {
         assertNotNull(board.getBar(1));
     }
-
-    @Test // Test if a valid endpoint is returned
+    @Test 
     void testGetEndpoint() {
         assertNotNull(board.getEndpoint(1));
     }
-
-    @Test // Test if the correct match number is returned
-    void testgetGameNumber() {
-        assertEquals(3, board.getGameNumber());
+    @Test 
+    void testGetGameNumber() {
+        assertEquals(2, board.getGameNumber());
     }
-
-    @Test // Test if the match number is set correctly
-    void testsetGameNumber() {
+    @Test 
+    void testSetGameNumber() {
         board.setGameNumber(5);
         assertEquals(5, board.getGameNumber());
     }
-
-    @Test // Test if the correct match round number is returned
+    @Test 
     void testgetRound() {
         board.setRound(2);
         assertEquals(2, board.getRound());
     }
 
-    @Test // Test if the match round number is set correctly
+    // testing setter and adding methods
+    @Test
     void testsetRound() {
         board.setRound(3);
         assertEquals(3, board.getRound());
     }
-
-    @Test // Test if the match round number is incremented correctly
-    void testaddGamenumber() {
-        board.setRound(1);
+    @Test 
+    void testAddGamenumber() {
+        board.setRound(2);
         board.addGamenumber();
         assertEquals(2, board.getRound());
     }
-
-    @Test // Test if the players' scores are set to zero
-    void testsetZeroScore() {
+    @Test
+    void testSetZeroScore() {
         board.setZeroScore();
         assertEquals(0, board.getPlayer(1).getScore());
         assertEquals(0, board.getPlayer(2).getScore());
     }
-
-    @Test // Test if the current player's score is incremented correctly
-    void testaddScore() {
+    @Test 
+    void testAddScore() {
         board.addScore();
         assertEquals(10, board.getPlayer(0).getScore());
     }
-
-    @Test // Test if the correct dice move steps are returned
-    void testgetMoveStep() {
-        board.setDiceStepVals(4, 0); // Set the dice move steps
-        assertEquals(4, board.getMoveStep(1)); // Test if the dice move steps are returned correctly
+    @Test 
+    void testGetMoveStep() {
+        board.setDiceStepVals(4, 0); 
+        assertEquals(4, board.getMoveStep(1));
         assertEquals(0, board.getMoveStep(2));
     }
-
-    @Test // Test if the dice move steps are set correctly
-    void testsetDiceStepVals() {
-        board.setDiceStepVals(4, 0); // Set the dice move steps
-        assertEquals(4, board.getTotalNumMoves()); // Test if the dice move steps are set correctly
+    @Test 
+    void testSetDiceStepVals() {
+        board.setDiceStepVals(4, 0); 
+        assertEquals(4, board.getTotalNumMoves()); 
     }
-
-    @Test // Test if the new player is set correctly
+    @Test
     void testSetPlayer() {
-        Player newPlayer = new Player("New Player", CheckerTemplate.RED); // Set a new player for index 1
+        Player newPlayer = new Player("Franklin", CheckerTemplate.RED); 
         board.setPlayer(1, newPlayer);
-        assertEquals(InterfaceColours.RED + "New Player" + InterfaceColours.RESET, board.getPlayer(1).dispName()); // Test if the new player at index 1 is updated correctly
+        assertEquals(InterfaceColours.RED + "Franklin" + InterfaceColours.RESET, board.getPlayer(1).dispName()); 
     }
 }

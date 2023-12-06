@@ -1,7 +1,7 @@
 import java.util.Random;
 
 public class Dice {
-    int numMoves; // number of moves a player can make
+    private int numMoves; // number of moves a player can make
     private int[] faces, numSteps;
     private Random rand;
     private Interface intrface;
