@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Stack;
 
+
 public class Board {
 	public static final int NUM_POINTS = 24;
 	public static final int NUM_BARS = CheckerTemplate.values().length;
@@ -96,33 +97,7 @@ public class Board {
 		};
 	}
 
-	// set dice face according to user input
-	public void setFace(InputCheck command) {
-		dice.setFace(command.getFace(1), command.getFace(2));
-	}
 
-	// return dice face for the given index
-	public int getFace(int index) {
-		return switch (index) {
-			case 1 -> dice.getFace(1);
-			case 2 -> dice.getFace(2);
-			default -> 0;
-		};
-	}
-
-	// return move step of the dice given the index
-	public int getMoveStep(int index) {
-		return switch (index) {
-			case 1 -> dice.getStepVal(1);
-			case 2 -> dice.getStepVal(2);
-			default -> 0;
-		};
-	}
-
-	// set the value of each dice step
-	public void setDiceStepVals(int stepOne, int stepTwo) {
-		dice.setStepVal(stepOne, stepTwo);
-	}
 
 	// return if one round is over
 	public boolean isRoundOver() {
@@ -214,12 +189,39 @@ public class Board {
 		return maxpoint;
 	}
 
-	// Roll the dice
+	// DICE METHODS
 	public void rollDice() {
 		dice.roll();
 	}
 	public void setZeroDice(){
 		dice.setDiceZero();
+	}
+		// set dice face according to user input
+	public void setFace(InputCheck command) {
+		dice.setFace(command.getFace(1), command.getFace(2));
+	}
+
+	// return dice face for the given index
+	public int getFace(int index) {
+		return switch (index) {
+			case 1 -> dice.getFace(1);
+			case 2 -> dice.getFace(2);
+			default -> 0;
+		};
+	}
+
+	// return move step of the dice given the index
+	public int getMoveStep(int index) {
+		return switch (index) {
+			case 1 -> dice.getStepVal(1);
+			case 2 -> dice.getStepVal(2);
+			default -> 0;
+		};
+	}
+
+	// set the value of each dice step
+	public void setDiceStepVals(int stepOne, int stepTwo) {
+		dice.setStepVal(stepOne, stepTwo);
 	}
 
 	public Stack<Checker> getPoint(int i) {
@@ -252,6 +254,9 @@ public class Board {
 	}
 	public void setGameNumber (int gameNumber) { 
 		this.gameNumber = gameNumber;
+	}
+	public void addGamenumber(){
+		gameNumber++;
 	}
 	
 
@@ -791,4 +796,14 @@ public class Board {
 			}
 		}
 	}
+
+
+	// TEST METHODS
+	public void setPlayer(int index, Player player) { // Only for Test. Set the player object at the given index.
+	    if (index >= 0 && index < players.length) {
+	        players[index] = player;
+	    }
+	}
+
+	
 }
