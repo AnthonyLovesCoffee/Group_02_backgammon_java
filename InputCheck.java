@@ -49,8 +49,8 @@ public class InputCheck {
         }
         else if (inputUpper.equals("([1-9]|0[1-9]|[1-9][0-9])") && legalMoves[Integer.parseInt(inputUpper) - 1] != null){
             command = gameCommand.MOVE;
-            srcPile = legalMoves[Integer.parseInt(inputUpper) - 1].substring(0,2); ;
-            srcPile = legalMoves[Integer.parseInt(inputUpper) - 1].substring(2,4); 
+            srcPile = legalMoves[Integer.parseInt(inputUpper) - 1].substring(0,2);
+            destPile = legalMoves[Integer.parseInt(inputUpper) - 1].substring(2,4); 
         }
         else if (inputUpper.matches("(0[1-9]|1[0-9]|2[0-4]|B[1-2])(0[1-9]|1[0-9]|2[0-4]|E[1-2])")) {
 			command = gameCommand.MOVE;
