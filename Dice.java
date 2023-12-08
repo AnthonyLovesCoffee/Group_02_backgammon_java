@@ -42,6 +42,11 @@ public class Dice {
         }
     }
 
+    
+    /** 
+     * @param f1
+     * @param f2
+     */
     // specifiy face values of the dice and updates number of moves
     public void setFace (int f1, int f2) { 
     	numSteps[0] = 1;
@@ -57,6 +62,11 @@ public class Dice {
         intrface.printDice(f1, f2);
     }
 
+    
+    /** 
+     * @param index
+     * @return int
+     */
     // face on dice(index)
     public int getFace (int index) { 
     	return switch (index) {
@@ -66,6 +76,11 @@ public class Dice {
 		};
     }
 
+    
+    /** 
+     * @param firstStep
+     * @param secondStep
+     */
     // sets move step values and updates the total move number
     public void setStepVal (int firstStep, int secondStep) { 
     	numSteps[0] = firstStep;
@@ -73,6 +88,11 @@ public class Dice {
     	numMoves = numSteps[0] + numSteps[1];
     }
 
+    
+    /** 
+     * @param index
+     * @return int
+     */
     // returns the step value for the specified index
     public int getStepVal (int index) {
     	return switch (index) {
@@ -82,6 +102,10 @@ public class Dice {
 		};
     }
 
+    
+    /** 
+     * @param i
+     */
     public void decreaseNumMoves (int i) { 
     	switch (i) {
 			case 1 -> numSteps[0]--;
@@ -90,6 +114,10 @@ public class Dice {
 		numMoves = numSteps[0] + numSteps[1];
     }
 
+    
+    /** 
+     * @return int
+     */
     // getter to return total number of moves
     public int getNumMoves(){
         return numMoves;
