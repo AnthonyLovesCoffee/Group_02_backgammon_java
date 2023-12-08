@@ -65,6 +65,11 @@ public class InputCheck {
 			faces[1] = Integer.parseInt(dice[1]);
         }
     }
+    
+    /** 
+     * @param input
+     * @return boolean
+     */
     // check if input is valid move/command
     public static boolean validMove(String input){
         String inputUpper = input.toUpperCase().trim();
@@ -75,22 +80,43 @@ public class InputCheck {
                 || input.matches("([1-9]|0[1-9]|[1-9][0-9])") && legalMoves[Integer.parseInt(input) - 1] != null;
     }
 
+    
+    /** 
+     * @return boolean
+     */
     // checking source of move
     public boolean fromBarMove(){
         return srcPile.matches("B1|B2");
     }
+    
+    /** 
+     * @return boolean
+     */
     public boolean fromPointMove(){
         return srcPile.matches("0[1-9]|1[0-9]|2[0-4]");
     }
 
+    
+    /** 
+     * @return boolean
+     */
     // checking destination of move
     public boolean toEndMove(){
         return destPile.matches("E1|E2");
     }
+    
+    /** 
+     * @return boolean
+     */
     public boolean toPointMove(){
         return destPile.matches("0[1-9]|1[0-9]|2[0-4]");
     }
 
+    
+    /** 
+     * @param bar
+     * @return int
+     */
     // convert bar and endpoints to appropriate index
     private int barToInt(String bar){
         return switch(bar){
@@ -99,6 +125,11 @@ public class InputCheck {
         default -> 0;
         };
     }
+    
+    /** 
+     * @param endpoint
+     * @return int
+     */
     private int endToInt(String endpoint){
         return switch(endpoint){
         case "E1" -> 0;
@@ -107,12 +138,21 @@ public class InputCheck {
         };
     }
 
+    
+    /** 
+     * @param input
+     * @return boolean
+     */
     // check the input string is a text file   
     public static boolean text (String input) { 
 		String inputFormatted = input.trim();
 		return inputFormatted.matches("file:(.+\\.txt)");
 	}
 
+    /** 
+     * @param input
+     * @return String
+     */
     // recieves the text from the input string if it's a text file
     public static String recText(String input) { 
     String inputFormatted = input.trim();
@@ -122,6 +162,9 @@ public class InputCheck {
         return ""; 
 }
 
+    /** 
+     * @return boolean
+     */
     // boolean methods to check the user's command
     public boolean move(){
         return command == gameCommand.MOVE;
@@ -154,6 +197,10 @@ public class InputCheck {
         return command == gameCommand.FORFEIT;
     }
 
+    /** 
+     * @param input
+     * @return String
+     */
     public boolean checkText(String input){
         String trimmed = input.trim();
         return trimmed.matches("test:(.+\\.txt)");
@@ -179,6 +226,10 @@ public class InputCheck {
         }
     }
 
+    /** 
+     * @param index
+     * @return int
+     */
     // returns the  face value 
     public int getFace (int index) { 
 		return switch (index) {
@@ -188,6 +239,10 @@ public class InputCheck {
 		};
 	}
 
+    /** 
+     * @param in
+     * @param legalMove
+     */
     // adds all the legal moves at an index to array
     public static void setLegalMoves (int i, String legalMove) { 
 		legalMoves[i] = legalMove;
