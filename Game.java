@@ -3,11 +3,6 @@ public class Game {
 	Interface intface = new Interface();
 	InputCheck command;
 
-	// METHOD USED FOR JUNIT TEST
-	public Board compareBoard () {
-		return board;
-	}
-
 	public void initGame() {
 		int startControl = 0;
 		boolean matchOverDisplayed = false;

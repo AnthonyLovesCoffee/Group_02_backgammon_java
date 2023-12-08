@@ -64,7 +64,8 @@ public class Interface {
 		return input;
 	}
 
-	public String readFile(String string, Scanner in, String promptMessage) { // Read content as input from a file
+	// read file as input to play game
+	public String readFile(String string, Scanner in, String promptMessage) { 
 		boolean fileReadSuccess = false;
 		String fileContent = "";
 		do {
@@ -81,7 +82,7 @@ public class Interface {
 					while ((line = br.readLine()) != null)
 						fileContentBuilder.append(line).append("\n");
 					br.close();
-					fileContent = fileContentBuilder.toString().trim(); // Store the file content
+					fileContent = fileContentBuilder.toString().trim(); 
 					fileReadSuccess = true;
 				} catch (FileNotFoundException e) {
 					System.out.println("Error: File not found - " + e.getMessage());
@@ -108,10 +109,10 @@ public class Interface {
 		System.out.println(player + " forfeits their turn.");
 	}
 
-	// initial screen to get player names
+	// initial screen to get player names and number of rounds
 	public void gameIntro(Board board) {
 		boolean correctInput = false;
-		String lengthMsg = "Enter length of Match: ";
+		String lengthMsg = "Enter length of the game: ";
 		System.out.print("Enter name of Player 1: ");
 		board.initPlayer(1);
 		System.out.println("Player 1: " + board.getPlayer(1).dispName() + ", Colour: RED");
@@ -120,24 +121,24 @@ public class Interface {
 		System.out.println("Player 2: " + board.getPlayer(2).dispName() + ", Colour: WHITE");
 		while (!correctInput) {
 			System.out.print(lengthMsg);
-			String matchNumberInput = key.nextLine();
-			if (input.checkText(matchNumberInput))
-				matchNumberInput = readFile(matchNumberInput, key, "Please enter a new length of the match: ");
+			String numGameString = key.nextLine();
+			if (input.checkText(numGameString))
+				numGameString = readFile(numGameString, key, "Please enter length of the game: ");
 			try {
-				double doubleValue = Double.parseDouble(matchNumberInput);
+				double doubleValue = Double.parseDouble(numGameString);
 				if (doubleValue > 0 && Math.floor(doubleValue) == doubleValue) {
 					board.setGameNumber((int) doubleValue);
 					board.setRound(1);
 					correctInput = true;
 				} else if (Math.floor(doubleValue) != doubleValue) {
-					System.out.println("Error: The entered number is a decimal, please try again.");
+					System.out.println("Error: The entered number is a float, please try again.");
 				} else {
-					System.out.println("Error: The entered number is not a positive integer, please try again.");
+					System.out.println("Error: The entered number is not a natural number, please try again.");
 				}
 			} catch (NumberFormatException e) {
 				System.out.println("Error: The entered string cannot be converted to a number, please try again.");
 			}
-			lengthMsg = "Please enter a new length of the match:";
+			lengthMsg = "Please enter a new length of the game:";
 		}
 	}
 
@@ -146,23 +147,25 @@ public class Interface {
 		System.out.println("Enter START to start the game, enter QUIT to exit or enter HINT to view controls");
 	}
 
+	// print message for invalid commands
 	public void printInvalidCmd() {
 		System.out.println("Invalid command, enter HINT to view controls or try again.");
 	}
 
 	public void displayBoard(Board board) {
+		// calculating number of spaces for board printout
 		String currentPipString = Integer.toString(board.getPlayer(0).getPips());
 		String redPipString = Integer.toString(board.getPlayer(1).getScore());
 		String whitePipString = Integer.toString(board.getPlayer(2).getScore());
-		String matchNum = Integer.toString(board.getGameNumber());
+		String gameNum = Integer.toString(board.getGameNumber());
 		String roundNum = Integer.toString(board.getRound());
-		int numberSpacesCurrentPlayerPips = 4 - currentPipString.length();
-		int numberSpacesPlayerREDScoreFormer = 7 - redPipString.length() / 2;
-		int numberSpacesPlayerREDScoreLater = 8 - (redPipString.length() + 1) / 2;
-		int numberSpacesPlayerWHITEScoreFormer = 7 - whitePipString.length() / 2;
-		int numberSpacesPlayerWHITEScoreLater = 8 - (whitePipString.length() + 1) / 2;
-		int numberSpacesGame = 5 - matchNum.length();
-		int numberSpacesRound = 5 - roundNum.length();
+		int currentPipBLANK = 4 - currentPipString.length();
+		int redScoreInitBLANK = 7 - redPipString.length() / 2;
+		int redScoreFinalBLANK = 8 - (redPipString.length() + 1) / 2;
+		int whiteScoreInitBLANK = 7 - whitePipString.length() / 2;
+		int whiteScoreFinalBLANK = 8 - (whitePipString.length() + 1) / 2;
+		int gameTileBLANK = 5 - gameNum.length();
+		int roundTileBLANK = 5 - roundNum.length();
 		int numberUppoints = Math.max(board.getSize("uppoint"), 1);
 		int numberDownpoints = Math.max(board.getSize("downpoint"), 1);
 
@@ -180,10 +183,10 @@ public class Interface {
 			System.out.print("| Current player's color: " + InterfaceColours.RED  + board.getPlayer(0).getColourString() + InterfaceColours.RESET + "                                 pips: " + board.getPlayer(0).getPips());
 		} else if (board.getPlayer(0).getColourString() == "W")
 			System.out.print("| Current player's color: " + InterfaceColours.WHITE  + board.getPlayer(0).getColourString() + InterfaceColours.RESET + "                                 pips: " + board.getPlayer(0).getPips());
-		for (int i = 0; i < numberSpacesCurrentPlayerPips; i++)
+		for (int i = 0; i < currentPipBLANK; i++)
             System.out.print(" ");
-		System.out.print("|    Game: " + board.getGameNumber());
-		for (int i = 0; i < numberSpacesGame; i++)
+		System.out.print("|   Games: " + board.getGameNumber());
+		for (int i = 0; i < gameTileBLANK; i++)
             System.out.print(" ");
 		System.out.println("|");
 
@@ -237,7 +240,7 @@ public class Interface {
 		}
 
 		System.out.print("   Round: " + board.getRoundNumber());
-		for (int i = 0; i < numberSpacesRound; i++)
+		for (int i = 0; i < roundTileBLANK; i++)
             System.out.print(" ");
 		//System.out.println("|");
 
@@ -270,10 +273,10 @@ public class Interface {
 		System.out.print(" | " + InterfaceColours.WHITE + "B2" + InterfaceColours.RESET + " | ");
 		System.out.print(InterfaceColours.RED + "06   05   04   03   02   01" + InterfaceColours.RESET + " | "
 				+ InterfaceColours.RED + "E1" + InterfaceColours.RESET + " |");
-		for (int i = 0; i < numberSpacesPlayerREDScoreFormer; i++)
+		for (int i = 0; i < redScoreInitBLANK; i++)
 			System.out.print(" ");
 		System.out.print(board.getPlayer(1).getScore());
-		for (int i = 0; i < numberSpacesPlayerREDScoreLater; i++)
+		for (int i = 0; i < redScoreFinalBLANK; i++)
 			System.out.print(" ");
 		System.out.println("|");
 		// end of top portion
@@ -376,10 +379,10 @@ public class Interface {
 				+ InterfaceColours.RED + "B1" + InterfaceColours.RESET + " | " + InterfaceColours.RED
 				+ "19   20   21   22   23   24" + InterfaceColours.RESET + " | " + InterfaceColours.WHITE + "E2"
 				+ InterfaceColours.RESET + " |");
-		for (int i = 0; i < numberSpacesPlayerWHITEScoreFormer; i++)
+		for (int i = 0; i < whiteScoreInitBLANK; i++)
 			System.out.print(" ");
 		System.out.print(board.getPlayer(2).getScore());
-		for (int i = 0; i < numberSpacesPlayerWHITEScoreLater; i++)
+		for (int i = 0; i < whiteScoreFinalBLANK; i++)
 			System.out.print(" ");
 		System.out.println("|");
 		System.out.println("|---------------------------------------------------------------------|---------------|");
@@ -435,19 +438,16 @@ public class Interface {
 
 	public void GameOver(Board board) { 
 		if (board.getPlayer(1).getScore() > board.getPlayer(2).getScore()) {
-			System.out.println(board.getPlayer(1).dispName() + " wins the game!.");
-		} else if (board.getPlayer(1).getScore() < board.getPlayer(2).getScore()) {
-			System.out.println(board.getPlayer(2).dispName() + " wins the game!.");
-		} else if (board.getPlayer(1).getScore() == board.getPlayer(2).getScore())
+			System.out.println(board.getPlayer(1).dispName() + " wins the game!");
+		} 
+		else if (board.getPlayer(1).getScore() < board.getPlayer(2).getScore()) {
+			System.out.println(board.getPlayer(2).dispName() + " wins the game!");
+		} 
+		else if (board.getPlayer(1).getScore() == board.getPlayer(2).getScore())
 			System.out.println("Its a draw :(");
 		System.out.println("Game over.");
 	}
-
-	public void displayRestart () { // Displays a message when the game is restarted.
-		System.out.println("The game starts over from the beginning!");
-	}
 	
-
 	// print message to the screen when user quits
 	public void displayQuit() {
 		System.out.println("You Quit. Loser");
@@ -533,20 +533,20 @@ public class Interface {
 	public void printSkip (Board board) {
 		System.out.println("The current round was skipped so no points awarded.");
 		if (board.getRoundNumber() == 1) {
-			System.out.println("There are " + board.getRoundNumber() + " total rounds, therefore the game is over.");
+			System.out.println("Game Over");
 		} else if (board.getRoundNumber() > 1)
 			System.out.print("There are " + board.getRoundNumber() + " total rounds, ");
 		if (board.getRoundNumber() - board.getRound() == 1) {
-			System.out.println("so there is still " + (board.getRoundNumber() - board.getRound()) + " remaining rounds.");
+			System.out.println("so there is still " + (board.getRoundNumber() - board.getRound()) + " rounds");
 		} else if (board.getRoundNumber() - board.getRound() > 1)
-			System.out.println("so there are still " + (board.getRoundNumber() - board.getRound()) + " remaining rounds.");
+			System.out.println("so there are still " + (board.getRoundNumber() - board.getRound()) + " rounds");
 	}
 
 	// print message when a round is over
 	public void roundOver(Board board){
 		System.out.println("Round " + board.getRound() + " over. " + board.getPlayer(0).getColourString() + " wins this round!");
 		if (board.getRoundNumber() == 1) {
-			System.out.println("There is " + board.getRoundNumber() + " round in total, so now the game is over.");
+			System.out.println("Gane Over");
 		} else if (board.getRoundNumber() > 1)
 			System.out.print("There are " + board.getRoundNumber() + " rounds in total, ");
 		if (board.getRoundNumber() - board.getRound() == 1) {
