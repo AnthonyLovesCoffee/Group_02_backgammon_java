@@ -21,6 +21,13 @@ public class Board {
 	private int roundNumber = 1;
 	private int gameNumber;
 
+	// TEST METHODS
+	public void setPlayer(int index, Player player) { 
+	    if (index >= 0 && index < players.length) {
+	        players[index] = player;
+	    }
+	}
+
 	Board() {
 		intrface = new Interface();
 		input = new Scanner(System.in);
@@ -790,14 +797,6 @@ public class Board {
 				topoint.push(frompointPiece);
 			}
 		}
-	}
-
-
-	// TEST METHODS
-	public void setPlayer(int index, Player player) { // Only for Test. Set the player object at the given index.
-	    if (index >= 0 && index < players.length) {
-	        players[index] = player;
-	    }
 	}
 
 	
