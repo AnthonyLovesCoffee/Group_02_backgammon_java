@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 
-public class BoardTest {
+public class Boardtest {
     
     private Board board;
     private InputCheck cmd;
