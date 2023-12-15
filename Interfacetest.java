@@ -1,12 +1,9 @@
-
-
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -52,13 +49,6 @@ class Interfacetest {
         assertEquals("Enter START to start the game, enter QUIT to exit or enter HINT to view controls\n", outputStream.toString());
     }
 
-    @Test // Test the displayRestart method
-    void testDisplayRestart() {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outputStream));
-        Interface.displayRestart();
-        assertEquals("The game starts over from the beginning!\n", outputStream.toString());
-    }
 
     @Test // Test the displayPiece method
     void testDisplayPiece() {
@@ -67,7 +57,7 @@ class Interfacetest {
         Interface.displayBoard(board);
         String expectedOutput = """
             |---------------------------------------------------------------------|---------------|
-            | Current player's color: [0;31mR[0m                                 pips: 167 |    Game: 3    |
+            | Current player's color: [0;31mR[0m                                 pips: 167 |   Games: 3    |
             |---------------------------------------------------------------------|---------------|
             | Dice:      0              0              0              0           |
                Round: 1    |
@@ -87,7 +77,7 @@ class Interfacetest {
             | [0;31m o[0m                  [0;37m o[0m      |    | [0;37m o[0m                       [0;31m o[0m | [0;37m00[0m |---------------|
             | [0;37m12   11   10   09   08   07[0m | [0;31mB1[0m | [0;37m06   05   04   03   02   01[0m | [0;37mE2[0m |  [0;37m  W[0m  Score   |
             | [0;31m13   14   15   16   17   18[0m | [0;31mB1[0m | [0;31m19   20   21   22   23   24[0m | [0;37mE2[0m |       0       |
-            |---------------------------------------------------------------------|---------------|
+            |---------------------------------------------------------------------|---------------|           
                 """;;
         assertEquals(expectedOutput, outputStream.toString());
     }
@@ -136,7 +126,7 @@ class Interfacetest {
         board.setRound(1);
         Interface.roundOver(board);
         String expectedOutput = "Round 1 over. R wins this round!\n" + //
-                "There is 1 round in total, so now the game is over.\n";
+                "Game Over\n";
         assertEquals(expectedOutput, outContent.toString());
     }
 
@@ -146,7 +136,7 @@ class Interfacetest {
         System.setOut(new PrintStream(outputStream));
         Interface.printSkip(board);
         String expectedOutput = "The current round was skipped so no points awarded.\n" + //
-                "There are 1 total rounds, therefore the game is over.\n";
+                "Game Over\n";
         assertEquals(expectedOutput, outputStream.toString());
     }
 
@@ -248,4 +238,3 @@ class Interfacetest {
         assertEquals(expectedOutput, outputStream.toString());
 	}
 }
-

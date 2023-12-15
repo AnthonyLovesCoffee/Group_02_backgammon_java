@@ -546,7 +546,7 @@ public class Interface {
 	public void roundOver(Board board){
 		System.out.println("Round " + board.getRound() + " over. " + board.getPlayer(0).getColourString() + " wins this round!");
 		if (board.getRoundNumber() == 1) {
-			System.out.println("Gane Over");
+			System.out.println("Game Over");
 		} else if (board.getRoundNumber() > 1)
 			System.out.print("There are " + board.getRoundNumber() + " rounds in total, ");
 		if (board.getRoundNumber() - board.getRound() == 1) {
