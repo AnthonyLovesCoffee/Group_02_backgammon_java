@@ -1,3 +1,4 @@
+// Stores properties and methods for a game player, including name, score, pips, and a "CheckerTemplate" for display customization
 public class Player {
     private String name;
     private int score, pips;

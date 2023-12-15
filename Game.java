@@ -1,3 +1,4 @@
+// Main logic for a board game application, handling game initialization, user input processing, and game state management.
 public class Game {
 	Board board = new Board();
 	Interface intface = new Interface();

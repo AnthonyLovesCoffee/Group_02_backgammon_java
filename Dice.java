@@ -1,3 +1,4 @@
+// Manages dice rolls, move counts, and interaction with a game interface.
 import java.util.Random;
 
 public class Dice {

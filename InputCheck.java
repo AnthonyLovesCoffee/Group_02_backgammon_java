@@ -1,3 +1,4 @@
+//  Interprets and processes user inputs for game commands, manages dice face values, and tracks legal moves for a board game.
 public class InputCheck {
     public enum gameCommand{
         MOVE,

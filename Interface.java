@@ -1,3 +1,4 @@
+// Manages user interactions for a game, handling input parsing, game messaging, and board display.
 import java.util.*;
 import java.io.BufferedReader;
 import java.io.File;
